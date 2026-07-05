@@ -1,6 +1,7 @@
 import { supabase } from '../../../lib/supabase';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import AddToCartButton from '../../../components/AddToCartButton';
 
 export default async function ProductPage({
   params,
@@ -20,9 +21,11 @@ export default async function ProductPage({
     notFound();
   }
 
-  const images = (product.product_images ?? []).sort(
-    (a, b) => a.sort_order - b.sort_order
+  const images = [...(product.product_images ?? [])].sort(
+    (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
   );
+
+  if (product.category_id == null) return null;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8">
@@ -54,12 +57,15 @@ export default async function ProductPage({
             <span className="text-red-700">Sold out</span>
           )}
         </p>
-        <button
-          disabled={product.stock_quantity < 1}
-          className="bg-shop-accent text-white px-6 py-3 rounded font-semibold disabled:opacity-40"
-        >
-          Add to Cart
-        </button>
+
+        <AddToCartButton
+          productId={product.id}
+          name={product.name}
+          price={product.price}
+          categoryId={product.category_id}
+          imageUrl={images[0]?.url ?? ''}
+          disabled={product.stock_quantity <= 0}
+        />
       </div>
     </div>
   );
