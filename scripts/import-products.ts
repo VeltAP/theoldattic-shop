@@ -8,7 +8,7 @@ import { supabaseAdmin } from "../lib/supabaseAdmin";
 
 const CSV_PATH = "data/products_export.csv";
 const BATCH_SIZE = 50;
-const START_INDEX = 100;
+const START_INDEX = 150;
 
 type ShopifyRow = {
     Handle: string;
@@ -104,8 +104,8 @@ const groups = groupByHandle(rows);
 // console.log(`CSV rows: ${rows.length}`);
 // console.log(`Products found: ${groups.size}`);
 
-const firstHandle = Array.from(groups.keys())[0];
-const firstProduct = groups.get(firstHandle)!;
+// const firstHandle = Array.from(groups.keys())[0];
+// const firstProduct = groups.get(firstHandle)!;
 
 // console.log("First product:");
 // console.log(firstProduct.main.Title);
