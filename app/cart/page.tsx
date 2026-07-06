@@ -89,6 +89,28 @@ export default function CartPage() {
 
   const grandTotal = subtotal + shippingTotal;
 
+  const handleCheckout = async () => {
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: items.map(({ productId, name, price, quantity }) => ({
+          productId,
+          name,
+          price,
+          quantity,
+        })),
+        shippingTotal,
+      }),
+    });
+
+    const { url } = await response.json();
+
+    if (url) {
+      window.location.assign(url);
+    }
+  };
+
   if (items.length === 0) {
     return <p>Your cart is empty.</p>;
   }
@@ -146,6 +168,7 @@ export default function CartPage() {
           <p>
             <strong>Total: €{grandTotal.toFixed(2)}</strong>
           </p>
+          <button onClick={handleCheckout}>Checkout</button>
         </div>
       )}
     </div>

@@ -3,7 +3,6 @@ import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 
 export default function Header() {
-
   const { items } = useCart();
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
