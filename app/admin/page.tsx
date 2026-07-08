@@ -11,6 +11,9 @@ export default function AdminDashboard() {
         <Link href="/admin/orders" className="text-shop-accent underline">
           View Orders
         </Link>
+        <Link href="/admin/shipping" className="text-shop-accent underline">
+          Manage Shipping Rates
+        </Link>
       </div>
     </div>
   );
