@@ -1,109 +1,84 @@
-// import Header from '@/components/Header';
-// import Footer from '@/components/Footer';
-
 const faqs = [
   {
-    q: 'What kinds of items do you sell?',
-    a: 'We focus on vintage, reclaimed, and timeless pieces—curated for character, quality, and long-term enjoyment.',
+    q: "Do you ship worldwide?",
+    a: "Absolutely! We ship from Slovenia (EU) to customers all around the world. Whether you're in the USA, Canada, the UK, Europe, Singapore, Japan, or elsewhere—we've got you covered. Each item listing shows the shipping cost, but you're always welcome to contact us if you'd like us to confirm the best shipping option.",
   },
   {
-    q: 'How do you choose what to stock?',
-    a: 'We look for craftsmanship, condition, and whether the item has real “keep it” value. If it doesn’t meet our standards, it won’t make the list.',
+    q: "What is the delivery time?",
+    a: "European countries: 7–10 business days. USA: 14–28 business days. Canada: 14–28 business days. UK: 14–28 business days. Australia: 21–28 business days. Rest of the world: 21–35 business days. These are estimated delivery times and may vary due to customs processing or other factors beyond our control.",
   },
   {
-    q: 'Do you ship internationally?',
-    a: 'Shipping availability depends on your location. Check the shipping options at checkout for the most accurate details.',
+    q: "Can you ship faster?",
+    a: "Yes! We can ship with DHL Express or FedEx First Priority, which usually delivers within 2–4 business days. Please contact us for a shipping quote. Keep in mind that express shipping can be quite expensive, especially for larger items.",
   },
   {
-    q: 'Can I request a specific item?',
-    a: 'Yes—if you’re looking for something specific, reach out via the contact page and include details like style, size, and timeframe.',
+    q: "How do you pack your items?",
+    a: "Our team has many years of experience securely packing fragile vintage items. We use double-layer packaging: an inner layer of cardboard, bubble wrap, and styrofoam, and a custom-made plywood outer box. We also use eco-friendly materials whenever possible, and the wooden crates can be reused for storage.",
   },
   {
-    q: 'How should I care for vintage/reclaimed items?',
-    a: 'Care varies by material, but we recommend following the guidance provided on the product page. When in doubt, contact us and we’ll help.',
+    q: "Will I get tracking information for my package?",
+    a: "Yes. As soon as your order has been shipped, we will send you the courier information together with your tracking number.",
   },
   {
-    q: 'How do returns work?',
-    a: 'Return eligibility depends on the item and its condition. See our return policy for timelines and instructions, or contact us for help.',
+    q: "What if my item arrives damaged? Is the package insured?",
+    a: "Yes. Every shipment is fully insured for its full value. If your item arrives damaged, please contact us as soon as possible and send us photos of both the item and the packaging. We will immediately start a claim with the courier.",
+  },
+  {
+    q: "Will I need to pay customs fees?",
+    a: "We are located in Slovenia, European Union. Customers within the EU do not pay customs fees. Customers outside the EU may need to pay import duties or taxes depending on their country's regulations. These typically range from 11–25%, but please check with your local customs office for the exact amount.",
+  },
+  {
+    q: "Can your lamps be used in the US?",
+    a: "Yes. Our lamps are suitable for use with the US electrical system. You only need to purchase compatible light bulbs. For table lamps, you may also need a simple plug adapter.",
   },
 ];
 
 export default function FaqPage() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* <Header /> */}
+    <div className="max-w-4xl mx-auto px-4 py-12">
 
-      <main className="flex-1">
-        <section className="bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Frequently Asked Questions
-              </h1>
-              <p className="mt-4 text-base leading-7 text-gray-600">
-                Quick answers to common questions. If you don’t see what you’re
-                looking for, contact us and we’ll help.
-              </p>
-            </div>
+      <h1 className="text-4xl text-center font-display mb-4">
+        Frequently Asked Questions
+      </h1>
 
-            <div className="mt-10 grid gap-6 lg:gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <div className="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm">
-                  {faqs.map((item, idx) => (
-                    <details
-                      key={item.q}
-                      className="group p-6 [&_summary::-webkit-details-marker]:hidden"
-                    >
-                      <summary className="cursor-pointer list-none">
-                        <div className="flex items-start justify-between gap-4">
-                          <h2 className="text-base font-semibold text-gray-900">
-                            {item.q}
-                          </h2>
-                          <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition group-open:bg-gray-900 group-open:text-white">
-                            {idx + 1}
-                          </span>
-                        </div>
-                        <p className="mt-2 hidden text-sm leading-6 text-gray-600 group-open:block">
-                          {item.a}
-                        </p>
-                      </summary>
+      <p className="text-center text-gray-600 mb-10">
+        Here are the answers to the questions we receive most often.
+      </p>
 
-                      <div className="mt-3 text-sm leading-6 text-gray-600 group-open:block">
-                        {item.a}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </div>
+      <div>
+        {faqs.map((item) => (
+          <details
+            key={item.q}
+            className="border border-gray-300 rounded mb-4 p-4"
+          >
+            <summary className="font-semibold cursor-pointer">
+              {item.q}
+            </summary>
 
-              <aside className="lg:col-span-1">
-                <div className="rounded-2xl bg-gray-900 p-8 text-white">
-                  <h3 className="text-lg font-semibold">Still have questions?</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/80">
-                    Send us a message and we’ll respond as soon as possible.
-                  </p>
-                  <div className="mt-6 flex flex-col gap-3">
-                    <a
-                      href="mailto:hello@theoldattic.example"
-                      className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-white/90"
-                    >
-                      Email us
-                    </a>
-                    <a
-                      href="/contact"
-                      className="inline-flex items-center justify-center rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
-                    >
-                      Contact page
-                    </a>
-                  </div>
-                </div>
-              </aside>
-            </div>
-          </div>
-        </section>
-      </main>
+            <p className="mt-3 text-gray-700 leading-7">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
 
-      {/* <Footer /> */}
+      <div className="text-center mt-12">
+        <h2 className="text-2xl font-display mb-3">
+          Still have questions?
+        </h2>
+
+        <p className="text-gray-600 mb-6">
+          If you cannot find the answer you are looking for, feel free to contact us.
+        </p>
+
+        <a
+          href="/contact"
+          className="inline-block border border-gray-300 px-6 py-3 rounded hover:bg-gray-100"
+        >
+          Contact Us
+        </a>
+      </div>
+
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { supabase } from '../../../lib/supabase';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
+import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
+import ProductGallery from '../../../components/ProductGallery';
 
 export default async function ProductPage({
   params,
@@ -12,7 +13,7 @@ export default async function ProductPage({
 
   const { data: product } = await supabase
     .from('products')
-    .select('*, product_images(url, sort_order)')
+    .select('*, product_images(url, sort_order), categories(name, slug)')
     .eq('slug', slug)
     .eq('is_active', true)
     .single();
@@ -21,51 +22,76 @@ export default async function ProductPage({
     notFound();
   }
 
+  if (product.category_id == null) return null;
+
   const images = [...(product.product_images ?? [])].sort(
     (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
   );
 
-  if (product.category_id == null) return null;
+  const price = Number(product.price);
+  const inStock = product.stock_quantity > 0;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8">
-      <div>
-        <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden mb-3">
-          {images[0] && (
-            <Image src={images[0].url} alt={product.name} fill className="object-cover" />
-          )}
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {images.slice(1).map((img, i) => (
-            <div key={i} className="relative aspect-square bg-gray-200 rounded overflow-hidden">
-              <Image src={img.url} alt={product.name} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="w-full max-w-6xl mx-auto px-4 py-6 md:py-12 overflow-x-hidden">
+      {/* Breadcrumb — hidden on mobile */}
+      <nav className="hidden sm:block font-body text-sm text-shop-text/60 mb-6 break-words">
+        <Link href="/catalog" className="hover:text-shop-accent transition-colors">
+          Catalog
+        </Link>
+        {product.categories && (
+          <>
+            {' / '}
+            <Link
+              href={`/catalog/${product.categories.slug}`}
+              className="hover:text-shop-accent transition-colors"
+            >
+              {product.categories.name}
+            </Link>
+          </>
+        )}
+        {' / '}
+        <span className="text-shop-text">{product.name}</span>
+      </nav>
 
-      <div>
-        <h1 className="font-display text-3xl mb-2">{product.name}</h1>
-        <p className="font-body text-2xl text-shop-accent font-semibold mb-4">
-          €{product.price.toFixed(2)}
-        </p>
-        <p className="font-body mb-6 whitespace-pre-line">{product.description}</p>
-        <p className="mb-6">
-          {product.stock_quantity > 0 ? (
-            <span className="text-green-700">In stock</span>
-          ) : (
-            <span className="text-red-700">Sold out</span>
-          )}
-        </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full min-w-0">
+        <div className="w-full min-w-0">
+          <ProductGallery images={images} alt={product.name} />
+        </div>
 
-        <AddToCartButton
-          productId={product.id}
-          name={product.name}
-          price={product.price}
-          categoryId={product.category_id}
-          imageUrl={images[0]?.url ?? ''}
-          disabled={product.stock_quantity <= 0}
-        />
+        <div className="flex flex-col w-full min-w-0">
+          <h1 className="font-display text-2xl md:text-4xl text-shop-text mb-1 break-words">
+            {product.name}
+          </h1>
+          <p className="font-body text-xl md:text-2xl text-shop-accent font-semibold mb-3">
+            €{price.toFixed(2)}
+          </p>
+
+          <span
+            className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold mb-4 ${
+              inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                inStock ? 'bg-green-600' : 'bg-red-600'
+              }`}
+            />
+            {inStock ? 'In stock' : 'Sold out'}
+          </span>
+
+          <p className="font-body text-sm md:text-base text-shop-text/90 leading-normal whitespace-pre-line break-words mb-6">
+            {product.description}
+          </p>
+
+          <AddToCartButton
+            productId={product.id}
+            name={product.name}
+            price={price}
+            categoryId={product.category_id}
+            imageUrl={images[0]?.url ?? ''}
+            disabled={!inStock}
+          />
+        </div>
       </div>
     </div>
   );

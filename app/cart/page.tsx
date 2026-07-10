@@ -10,17 +10,49 @@ import {
   ShippingZone,
 } from '@/lib/shipping';
 import Image from 'next/image';
+import Link from 'next/link';
 
-// A small, fixed list is enough for a homework project —
-// you can expand this later or pull it from a real country list package.
 const COUNTRIES = [
-  { code: 'SI', name: 'Slovenia' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'IT', name: 'Italy' },
+  { code: 'AT', name: 'Austria' },
+  { code: 'BE', name: 'Belgium' },
+  { code: 'BG', name: 'Bulgaria' },
+  { code: 'HR', name: 'Croatia' },
+  { code: 'CY', name: 'Cyprus' },
+  { code: 'CZ', name: 'Czech Republic' },
+  { code: 'DK', name: 'Denmark' },
+  { code: 'EE', name: 'Estonia' },
+  { code: 'FI', name: 'Finland' },
   { code: 'FR', name: 'France' },
-  { code: 'US', name: 'United States' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'GR', name: 'Greece' },
+  { code: 'HU', name: 'Hungary' },
+  { code: 'IE', name: 'Ireland' },
+  { code: 'IT', name: 'Italy' },
+  { code: 'LV', name: 'Latvia' },
+  { code: 'LT', name: 'Lithuania' },
+  { code: 'LU', name: 'Luxembourg' },
+  { code: 'MT', name: 'Malta' },
+  { code: 'NL', name: 'Netherlands' },
+  { code: 'PL', name: 'Poland' },
+  { code: 'PT', name: 'Portugal' },
+  { code: 'RO', name: 'Romania' },
+  { code: 'SK', name: 'Slovakia' },
+  { code: 'SI', name: 'Slovenia' },
+  { code: 'ES', name: 'Spain' },
+  { code: 'SE', name: 'Sweden' },
+
   { code: 'GB', name: 'United Kingdom' },
-  // ...add whichever countries you want to offer
+  { code: 'CH', name: 'Switzerland' },
+  { code: 'NO', name: 'Norway' },
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'HK', name: 'Hong Kong' },
+  { code: 'AE', name: 'United Arab Emirates' },
 ];
 
 export default function CartPage() {
@@ -116,61 +148,155 @@ export default function CartPage() {
   }
 
   return (
-    <div>
-      <h1>Your Cart</h1>
+  <div className="max-w-5xl mx-auto px-4 py-12">
 
-      {items.map((item) => (
-        <div key={item.productId}>
-          <Image
-            src={item.imageUrl}
-            alt={item.name}
-            width={80}
-            height={80}
-          />
-          <span>{item.name}</span>
-          <span>€{item.price.toFixed(2)}</span>
+    <h1 className="text-4xl text-center font-display mb-10">
+      Shopping Cart
+    </h1>
 
-          <input
-            type="number"
-            min={1}
-            value={item.quantity}
-            onChange={(e) =>
-              updateQuantity(item.productId, Number(e.target.value))
-            }
-          />
+    {items.length === 0 ? (
+      <div className="text-center">
+        <p className="text-lg mb-6">Your cart is empty.</p>
 
-          <button onClick={() => removeItem(item.productId)}>Remove</button>
-        </div>
-      ))}
-
-      <div>
-        <label htmlFor="country">Shipping to: </label>
-        <select
-          id="country"
-          value={countryCode}
-          onChange={(e) => setCountryCode(e.target.value)}
+        <Link
+          href="/catalog"
+          className="inline-block border border-gray-300 rounded px-6 py-3 hover:bg-gray-100"
         >
-          {COUNTRIES.map((c) => (
-            <option key={c.code} value={c.code}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        {matchedZone && <span> ({matchedZone.name} zone)</span>}
+          Continue Shopping
+        </Link>
       </div>
+    ) : (
+      <>
+        <div className="space-y-6">
 
-      {loading ? (
-        <p>Loading shipping rates…</p>
-      ) : (
-        <div>
-          <p>Subtotal: €{subtotal.toFixed(2)}</p>
-          <p>Shipping: €{shippingTotal.toFixed(2)}</p>
-          <p>
-            <strong>Total: €{grandTotal.toFixed(2)}</strong>
-          </p>
-          <button onClick={handleCheckout}>Checkout</button>
+          {items.map((item) => (
+            <div
+              key={item.productId}
+              className="border border-gray-300 rounded p-4 flex gap-5"
+            >
+
+              <div className="w-32 h-32 relative flex-shrink-0">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.name}
+                  fill
+                  className="object-cover rounded"
+                />
+              </div>
+              <div className="flex-1">
+
+                <h2 className="text-xl font-medium">
+                  {item.name}
+                </h2>
+
+                <p className="mt-2">
+                  €{item.price.toFixed(2)}
+                </p>
+
+                <div className="mt-4">
+
+                  <label className="block mb-2">
+                    Quantity
+                  </label>
+
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateQuantity(
+                        item.productId,
+                        Number(e.target.value)
+                      )
+                    }
+                    className="border border-gray-300 rounded px-3 py-2 w-24"
+                  />
+
+                </div>
+
+                <button
+                  onClick={() => removeItem(item.productId)}
+                  className="mt-4 text-shop-accent hover:underline"
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            </div>
+          ))}
+
         </div>
-      )}
-    </div>
-  );
+
+        <div className="border border-gray-300 rounded p-6 mt-10">
+
+          <h2 className="text-2xl font-display mb-6">
+            Shipping
+          </h2>
+
+          <label className="block mb-2">
+            Destination Country
+          </label>
+
+          <select
+            value={countryCode}
+            onChange={(e) => setCountryCode(e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          >
+            {COUNTRIES.map((country) => (
+              <option
+                key={country.code}
+                value={country.code}
+              >
+                {country.name}
+              </option>
+            ))}
+          </select>
+
+          {matchedZone && (
+            <p className="mt-3 text-gray-600">
+              Shipping Zone: {matchedZone.name}
+            </p>
+          )}
+
+        </div>
+
+        <div className="border border-gray-300 rounded p-6 mt-8">
+
+          {loading ? (
+            <p>Loading shipping costs...</p>
+          ) : (
+            <>
+              <div className="flex justify-between mb-3">
+                <span>Subtotal</span>
+                <span>€{subtotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between mb-3">
+                <span>Shipping</span>
+                <span>€{shippingTotal.toFixed(2)}</span>
+              </div>
+
+              <hr className="my-4" />
+
+              <div className="flex justify-between text-xl font-semibold">
+                <span>Total</span>
+                <span>€{grandTotal.toFixed(2)}</span>
+              </div>
+
+              <button
+                onClick={handleCheckout}
+                className="w-full mt-8 bg-shop-accent text-white rounded py-3 hover:opacity-90"
+              >
+                Proceed to Checkout
+              </button>
+            </>
+          )}
+
+        </div>
+      </>
+    )}
+
+  </div>
+);
 }
