@@ -1,3 +1,5 @@
+import LocationMap from "@/components/LocationMap";
+
 export default function AboutPage() {
   return (
     <div className="bg-shop-bg text-shop-text">
@@ -183,6 +185,11 @@ export default function AboutPage() {
           <p>3304 Tabor, Slovenia</p>
           <p className="mt-3">+386 40 867 303 &nbsp;·&nbsp; +386 30 608 198</p>
           <p className="mt-3">oldattic.si@gmail.com &nbsp;·&nbsp; VAT: SI3487559</p>
+        </section>
+
+        <section className="mb-24">
+          <SectionLabel center>Find Us</SectionLabel>
+          <LocationMap />
         </section>
 
       </div>
