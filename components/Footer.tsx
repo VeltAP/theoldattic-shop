@@ -44,7 +44,7 @@ export default function Footer() {
               <p>Miklavz pri Taboru 61a, 3304 Tabor, Slovenia</p>
               <p>VAT ID: SI 34875590</p>
               <p>
-                <a href="mailto:hello@yourdomain.com" className="hover:text-shop-accent transition-colors">
+                <a href="mailto:oldattic.si@gmail.com" className="hover:text-shop-accent transition-colors">
                   oldattic.si@gmail.com
                 </a>
               </p>
@@ -111,7 +111,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-300 mt-8 pt-6 text-center text-shop-text/70">
-          <p>&copy; {new Date().getFullYear()} Vintage Shop. All items sold as-is, condition described per listing.</p>
+          <p>&copy; {new Date().getFullYear()} The Old Attic. All items sold as-is, condition described per listing.</p>
         </div>
       </div>
     </footer>
