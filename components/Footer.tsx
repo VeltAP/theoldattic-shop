@@ -18,10 +18,10 @@ const SHOP_LINKS = [
 ];
 
 const POLICY_LINKS = [
-  { href: '/policies/shipping', label: 'Shipping Policy' },
-  { href: '/policies/returns', label: 'Returns & Refunds' },
-  { href: '/policies/privacy', label: 'Privacy Policy' },
-  { href: '/policies/terms', label: 'Terms of Service' },
+  { href: '/policy/terms-of-service', label: 'Terms of Service' },
+  { href: '/policy/privacy-policy', label: 'Privacy Policy' },
+  { href: '/policy/shipping-policy', label: 'Shipping Policy' },
+  { href: '/policy/returns-policy', label: 'Returns & Refunds' },
 ];
 
 // const SOCIAL_LINKS = [
