@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { sendOrderConfirmationEmail } from '@/lib/email/orderConfirmation';
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -63,7 +64,24 @@ export async function POST(request: Request) {
         }
       }
 
-      // trigger confirmation email here (feature 2)
+      if (order) {
+        const orderItems = cartItems.map((item) => ({
+            order_id: order.id,
+            product_id: item.id,
+            quantity: item.qty,
+            price: item.price,
+        }));
+        await supabaseAdmin.from('order_items').insert(orderItems);
+
+        for (const item of cartItems) {
+            await supabaseAdmin
+            .from('products')
+            .update({ is_active: false, sold_at: new Date().toISOString() })
+            .eq('id', item.id);
+        }
+
+        await sendOrderConfirmationEmail(order, orderItems);
+        }
     }
   }
 
