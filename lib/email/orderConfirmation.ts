@@ -3,8 +3,8 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 type OrderItem = {
-  product_id: number;
-  quantity: number;
+  name: string;
+  qty: number;
   price: number;
 };
 
@@ -25,13 +25,12 @@ function renderOrderEmailHtml(order: Order, items: OrderItem[]): string {
     .map(
       (item) => `
         <tr>
-          <td style="padding: 8px 0;">Product #${item.product_id}</td>
-          <td style="padding: 8px 0; text-align: center;">${item.quantity}</td>
+          <td style="padding: 8px 0;">${item.name}</td>
+          <td style="padding: 8px 0; text-align: center;">${item.qty}</td>
           <td style="padding: 8px 0; text-align: right;">€${item.price.toFixed(2)}</td>
         </tr>`
     )
     .join('');
-
   return `
     <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto;">
       <h1 style="font-size: 20px;">Thank you for your order!</h1>

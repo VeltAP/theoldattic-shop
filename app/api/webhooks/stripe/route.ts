@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     if (!existing) {
       const address = session.customer_details?.address;
-      const cartItems: { id: number; qty: number; price: number }[] = JSON.parse(
+      const cartItems: { id: number; name: string; qty: number; price: number }[] = JSON.parse(
         session.metadata?.cart ?? '[]'
       );
 
@@ -62,26 +62,9 @@ export async function POST(request: Request) {
             .update({ is_active: false, sold_at: new Date().toISOString() })
             .eq('id', item.id);
         }
+
+        await sendOrderConfirmationEmail(order, cartItems);
       }
-
-      if (order) {
-        const orderItems = cartItems.map((item) => ({
-            order_id: order.id,
-            product_id: item.id,
-            quantity: item.qty,
-            price: item.price,
-        }));
-        await supabaseAdmin.from('order_items').insert(orderItems);
-
-        for (const item of cartItems) {
-            await supabaseAdmin
-            .from('products')
-            .update({ is_active: false, sold_at: new Date().toISOString() })
-            .eq('id', item.id);
-        }
-
-        await sendOrderConfirmationEmail(order, orderItems);
-        }
     }
   }
 

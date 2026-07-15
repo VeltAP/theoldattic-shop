@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/cancel`,
       metadata: {
-        cart: JSON.stringify(items.map((i) => ({ id: Number(i.productId), qty: i.quantity, price: i.price }))),
+        cart: JSON.stringify(items.map((i) => ({ id: Number(i.productId), name: i.name, qty: i.quantity, price: i.price }))),
       },
     });
 
