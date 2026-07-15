@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductGallery from '../../../components/ProductGallery';
+import ShippingEstimator from '../../../components/ShippingEstimator';
 
 export default async function ProductPage({
   params,
@@ -30,6 +31,22 @@ export default async function ProductPage({
 
   const price = Number(product.price);
   const inStock = product.stock_quantity > 0;
+
+  const { data: rateData } = await supabase
+    .from('shipping_rates')
+    .select('category_id, zone_id, rate')
+    .eq('category_id', product.category_id);
+
+  const rates = (rateData ?? [])
+    .filter(
+      (r): r is { category_id: number; zone_id: number; rate: number } =>
+        r.category_id !== null && r.zone_id !== null
+    )
+    .map((r) => ({
+      categoryId: r.category_id,
+      zoneId: r.zone_id,
+      rate: r.rate,
+    }));
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6 md:py-12 overflow-x-hidden">
@@ -91,6 +108,8 @@ export default async function ProductPage({
             imageUrl={images[0]?.url ?? ''}
             disabled={!inStock}
           />
+
+          <ShippingEstimator categoryId={product.category_id} rates={rates} />
         </div>
       </div>
     </div>
