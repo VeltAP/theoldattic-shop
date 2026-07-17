@@ -144,11 +144,24 @@ export default function CartPage() {
   };
 
   if (items.length === 0) {
-    return <p>Your cart is empty.</p>;
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h1 className="text-4xl font-display mb-6">Shopping Cart</h1>
+        <p className="text-lg text-gray-700 mb-8">
+          Your cart is empty. Add items to see them here and get ready to checkout.
+        </p>
+        <Link
+          href="/catalog"
+          className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-6 py-3 text-base font-medium text-gray-900 shadow-sm transition hover:bg-gray-50"
+        >
+          Continue Shopping
+        </Link>
+      </div>
+    );
   }
 
   return (
-  <div className="max-w-5xl mx-auto px-4 py-12">
+    <div className="max-w-5xl mx-auto px-4 py-12">
 
     <h1 className="text-4xl text-center font-display mb-10">
       Shopping Cart
