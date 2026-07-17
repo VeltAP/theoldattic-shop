@@ -8,7 +8,7 @@ import { supabaseAdmin } from "../lib/supabaseAdmin";
 
 const CSV_PATH = "data/products_export.csv";
 const BATCH_SIZE = 50;
-const START_INDEX = 150;
+const START_INDEX = 300;
 
 type ShopifyRow = {
     Handle: string;
