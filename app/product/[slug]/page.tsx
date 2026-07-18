@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductGallery from '../../../components/ProductGallery';
+import ProductCard from '../../../components/ProductCard';
 import ShippingEstimator from '../../../components/ShippingEstimator';
 import { ShareButtons } from '../../../components/ShareButtons';
 import { FavoriteButton } from '../../../components/FavoriteButton';
@@ -58,13 +59,11 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = await getProduct(slug);
 
-  if (!product || !product.is_active) {
-    notFound();
+  if (!product) {
+    notFound(); // wrong slug entirely — this is a real 404
   }
 
-  if (product) {
-    await supabaseAdmin.rpc('increment_view_count', { target_id: product.id });
-  }
+  await supabaseAdmin.rpc('increment_view_count', { target_id: product.id });
 
   if (product.category_id == null) return null;
 
@@ -73,7 +72,7 @@ export default async function ProductPage({
   );
 
   const price = Number(product.price);
-  const inStock = product.stock_quantity > 0;
+  const inStock = product.is_active && product.stock_quantity > 0;
 
   const { data: rateData } = await supabase
     .from('shipping_rates')
@@ -149,16 +148,28 @@ export default async function ProductPage({
             {product.description}
           </p>
 
-          <AddToCartButton
-            productId={product.id}
-            name={product.name}
-            price={price}
-            categoryId={product.category_id}
-            imageUrl={images[0]?.url ?? ''}
-            disabled={!inStock}
-          />
+          {product.is_active ? (
+            <>
+              <AddToCartButton
+                productId={product.id}
+                name={product.name}
+                price={price}
+                categoryId={product.category_id}
+                imageUrl={images[0]?.url ?? ''}
+                disabled={!inStock}
+              />
 
-          <ShippingEstimator categoryId={product.category_id} rates={rates} />
+              <ShippingEstimator categoryId={product.category_id} rates={rates} />
+            </>
+          ) : (
+            <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center">
+              <p className="font-semibold text-shop-text">This piece has been sold.</p>
+              <p className="text-sm text-shop-text/60 mt-1">
+                Every item here is one of a kind, so this exact piece won&apos;t be restocked,
+                but take a look at similar finds below.
+              </p>
+            </div>
+          )}
 
           <div className="mt-6">
             <ShareButtons
@@ -168,6 +179,43 @@ export default async function ProductPage({
             />
           </div>
         </div>
+      </div>
+
+      {!product.is_active && (
+        <SimilarProducts categoryId={product.category_id} excludeId={product.id} />
+      )}
+    </div>
+  );
+}
+
+async function SimilarProducts({
+  categoryId,
+  excludeId,
+}: {
+  categoryId: number;
+  excludeId: number;
+}) {
+  const { data: similar } = await supabase
+    .from('products')
+    .select('*, product_images(url, sort_order)')
+    .eq('category_id', categoryId)
+    .eq('is_active', true)
+    .neq('id', excludeId)
+    .limit(4);
+
+  if (!similar || similar.length === 0) return null;
+
+  return (
+    <div className="mt-12">
+      <h2 className="font-display text-xl text-shop-text mb-4">You might also like</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+        {similar.map((p) => (
+          <ProductCard
+            key={p.id}
+            product={p}
+            imageUrl={p.product_images?.[0]?.url}
+          />
+        ))}
       </div>
     </div>
   );

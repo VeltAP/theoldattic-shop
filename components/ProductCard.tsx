@@ -24,7 +24,9 @@ export default function ProductCard({ product, imageUrl }: ProductCardProps) {
             fill
             priority
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+              !product.is_active ? 'grayscale opacity-70' : ''
+            }`}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-sm text-gray-500">
@@ -32,11 +34,18 @@ export default function ProductCard({ product, imageUrl }: ProductCardProps) {
           </div>
         )}
 
+        {!product.is_active && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-black/70 text-white text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full">
+              Sold
+            </span>
+          </div>
+        )}
+
         <div className="absolute top-3 right-3">
           <FavoriteButton productId={product.id} />
         </div>
 
-        {/* hanging price tag */}
         <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-shop-bg/95 border border-shop-text/15 rounded-full pl-2 pr-3 py-1 shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full border border-shop-text/40" />
           <span className="font-body text-sm font-semibold text-shop-text">

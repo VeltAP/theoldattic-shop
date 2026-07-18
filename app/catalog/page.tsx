@@ -3,6 +3,7 @@ import ProductCard from "../../components/ProductCard";
 import { supabase } from "../../lib/supabase";
 import { getSortConfig, isValidSortKey } from "@/lib/sorting";
 import CatalogSortSelect from "../../components/CatalogSortSelect";
+import CatalogStatusFilter, { StatusKey } from "../../components/CatalogStatusFilter";
 
 const categories = [
   { name: "Lighting", slug: "lighting" },
@@ -17,28 +18,42 @@ type SearchParams = {
   q?: string;
   page?: string;
   sort?: string;
+  status?: string;
 };
 
 const PRODUCTS_PER_PAGE = 18;
+
+function isValidStatus(value: string | undefined): value is StatusKey {
+  return value === 'available' || value === 'sold' || value === 'all';
+}
 
 export default async function CatalogPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { q, page, sort } = await searchParams;
+  const { q, page, sort, status } = await searchParams;
 
   const currentPage = Number(page) || 1;
   const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const to = from + PRODUCTS_PER_PAGE - 1;
   const sortKey = isValidSortKey(sort) ? sort : "newest";
   const { column, ascending } = getSortConfig(sortKey);
+  const statusKey = isValidStatus(status) ? status : "available";
+
   const sortParam = sortKey !== "newest" ? `&sort=${encodeURIComponent(sortKey)}` : "";
+  const statusParam = statusKey !== "available" ? `&status=${encodeURIComponent(statusKey)}` : "";
 
   let query = supabase
     .from("products")
-    .select("*, product_images(url, sort_order)", { count: "exact" })
-    .eq("is_active", true);
+    .select("*, product_images(url, sort_order)", { count: "exact" });
+
+  if (statusKey === 'available') {
+    query = query.eq('is_active', true);
+  } else if (statusKey === 'sold') {
+    query = query.eq('is_active', false);
+  }
+  // 'all' — no filter
 
   if (q) {
     query = query.ilike("name", `%${q}%`);
@@ -78,7 +93,7 @@ export default async function CatalogPage({
         ))}
       </nav>
 
-      {/* Search + Sort, same row */}
+      {/* Search + Sort + Status, same row */}
       <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
         <form className="flex-1 max-w-md">
           <input
@@ -89,6 +104,7 @@ export default async function CatalogPage({
             className="w-full border border-gray-300 rounded px-4 py-2"
           />
         </form>
+        <CatalogStatusFilter currentStatus={statusKey} />
         <CatalogSortSelect currentSort={sortKey} />
       </div>
 
@@ -112,7 +128,7 @@ export default async function CatalogPage({
               <Link
                 href={`/catalog?page=${currentPage - 1}${
                   q ? `&q=${encodeURIComponent(q)}` : ""
-                }${sortParam}`}
+                }${sortParam}${statusParam}`}
                 className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
               >
                 &lt;
@@ -127,7 +143,7 @@ export default async function CatalogPage({
               <Link
                 href={`/catalog?page=${currentPage + 1}${
                   q ? `&q=${encodeURIComponent(q)}` : ""
-                }${sortParam}`}
+                }${sortParam}${statusParam}`}
                 className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
               >
                 &gt;
