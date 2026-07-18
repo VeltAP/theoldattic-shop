@@ -5,6 +5,7 @@ import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductGallery from '../../../components/ProductGallery';
 import ShippingEstimator from '../../../components/ShippingEstimator';
+import { ShareButtons } from '../../../components/ShareButtons';
 import { FavoriteButton } from '../../../components/FavoriteButton';
 
 export default async function ProductPage({
@@ -122,6 +123,14 @@ export default async function ProductPage({
           />
 
           <ShippingEstimator categoryId={product.category_id} rates={rates} />
+
+          <div className="mt-6">
+            <ShareButtons
+              url={`${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.slug}`}
+              title={product.name}
+              image={images[0]?.url}
+            />
+          </div>
         </div>
       </div>
     </div>
