@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
+import { ShareButtons } from '@/components/ShareButtons';
 
 export default async function BlogPostPage({
   params,
@@ -31,10 +32,18 @@ export default async function BlogPostPage({
       <h1 className="font-display text-3xl md:text-4xl text-shop-text mb-3">{post.title}</h1>
 
       {post.published_at && (
-        <p className="text-sm text-shop-text/50 mb-8">
+        <p className="text-sm text-shop-text/50 mb-4">
           {new Date(post.published_at).toLocaleDateString()}
         </p>
       )}
+
+      <div className="mb-8">
+        <ShareButtons
+          url={`${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug}`}
+          title={post.title}
+          image={post.cover_image ?? undefined}
+        />
+      </div>
 
       <div
         className="prose max-w-none font-body text-shop-text/90"

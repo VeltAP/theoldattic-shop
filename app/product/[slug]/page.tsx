@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { supabase } from '../../../lib/supabase';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { notFound } from 'next/navigation';
@@ -7,6 +8,47 @@ import ProductGallery from '../../../components/ProductGallery';
 import ShippingEstimator from '../../../components/ShippingEstimator';
 import { ShareButtons } from '../../../components/ShareButtons';
 import { FavoriteButton } from '../../../components/FavoriteButton';
+import { getProduct } from '@/lib/getProduct';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+
+  if (!product) {
+    return { title: 'Product not found | The Old Attic' };
+  }
+
+  const mainImage = [...(product.product_images ?? [])]
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0]?.url;
+  const url = `${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.slug}`;
+  const description =
+    product.description?.slice(0, 160) ??
+    `${product.name} — vintage find from The Old Attic.`;
+
+  return {
+    title: `${product.name} | The Old Attic`,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      url,
+      siteName: 'The Old Attic',
+      images: mainImage
+        ? [{ url: mainImage, width: 1200, height: 630, alt: product.name }]
+        : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description,
+      images: mainImage ? [mainImage] : [],
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -14,15 +56,9 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const product = await getProduct(slug);
 
-  const { data: product } = await supabase
-    .from('products')
-    .select('*, product_images(url, sort_order), categories(name, slug)')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .single();
-
-  if (!product) {
+  if (!product || !product.is_active) {
     notFound();
   }
 
