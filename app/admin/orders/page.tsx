@@ -1,22 +1,41 @@
-
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Database } from '../../../lib/database.types';
+import { ShipOrderButton } from '../../../components/ShipOrderButton';
 
 type Order = Database['public']['Tables']['orders']['Row'];
+
+async function fetchOrders(): Promise<Order[]> {
+  const response = await fetch('/api/admin/orders');
+  const result = await response.json();
+  return result.orders ?? [];
+}
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const refreshOrders = useCallback(async () => {
+    const data = await fetchOrders();
+    setOrders(data);
+  }, []);
+
   useEffect(() => {
-    async function loadOrders() {
-      const response = await fetch('/api/admin/orders');
-      const result = await response.json();
-      setOrders(result.orders ?? []);
-      setLoading(false);
+    let ignore = false;
+
+    async function load() {
+      const data = await fetchOrders();
+      if (!ignore) {
+        setOrders(data);
+        setLoading(false);
+      }
     }
-    loadOrders();
+
+    load();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   if (loading) return <p>Loading orders…</p>;
@@ -29,10 +48,11 @@ export default function AdminOrdersPage() {
           <tr className="text-left border-b">
             <th className="p-2">Date</th>
             <th className="p-2">Email</th>
-            <th className="p-2">Zone</th>
+            <th className="p-2">ID</th>
             <th className="p-2">Address</th>
             <th className="p-2">Total</th>
             <th className="p-2">Status</th>
+            <th className="p-2">Shipping</th>
           </tr>
         </thead>
         <tbody>
@@ -43,10 +63,17 @@ export default function AdminOrdersPage() {
                   : 'N/A'}
               </td>
               <td className="p-2">{order.customer_email}</td>
-              <td className="p-2">{order.shipping_zone}</td>
+              <td className="p-2">{order.id}</td>
               <td className="p-2">{order.shipping_address_line1} {order.shipping_address_line2} {order.shipping_postal_code} {order.shipping_city} {order.shipping_country}</td>
               <td className="p-2">€{order.total}</td>
               <td className="p-2">{order.status}</td>
+              <td className="p-2">
+                <ShipOrderButton
+                  orderId={order.id}
+                  currentStatus={order.status}
+                  onShipped={refreshOrders}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
