@@ -9,6 +9,8 @@ import ProductCard from '../../../components/ProductCard';
 import ShippingEstimator from '../../../components/ShippingEstimator';
 import { ShareButtons } from '../../../components/ShareButtons';
 import { FavoriteButton } from '../../../components/FavoriteButton';
+import { TrackRecentlyViewed } from '../../../components/TrackRecentlyViewed';
+import { RecentlyViewedStrip } from '../../../components/RecentlyViewedStrip';
 import { getProduct } from '@/lib/getProduct';
 
 export async function generateMetadata({
@@ -92,6 +94,8 @@ export default async function ProductPage({
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6 md:py-12 overflow-x-hidden">
+      <TrackRecentlyViewed productId={product.id} />
+
       {/* Breadcrumb — hidden on mobile */}
       <nav className="hidden sm:block font-body text-sm text-shop-text/60 mb-6 break-words">
         <Link href="/catalog" className="hover:text-shop-accent transition-colors">
@@ -184,6 +188,8 @@ export default async function ProductPage({
       {!product.is_active && (
         <SimilarProducts categoryId={product.category_id} excludeId={product.id} />
       )}
+
+      <RecentlyViewedStrip excludeId={product.id} />
     </div>
   );
 }

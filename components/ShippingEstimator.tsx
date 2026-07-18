@@ -100,6 +100,7 @@ export default function ShippingEstimator({ categoryId, rates }: ShippingEstimat
         onChange={(e) => setCountryCode(e.target.value)}
         className="w-full border border-gray-300 rounded px-3 py-2"
         disabled={loading}
+        suppressHydrationWarning
       >
         <option value="">Select your country</option>
         {COUNTRIES.map((country) => (

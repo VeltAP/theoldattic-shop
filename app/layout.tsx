@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from "@/context/FavoritesContext";
+import { RecentlyViewedProvider } from "@/context/RecentlyViewedContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -16,9 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <CartProvider>
           <FavoritesProvider>
-            <Header />
-            {children}
-            <Footer />
+            <RecentlyViewedProvider>
+              <Header />
+              {children}
+              <Footer />
+            </RecentlyViewedProvider>
           </FavoritesProvider>
         </CartProvider>
       </body>
