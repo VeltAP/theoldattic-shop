@@ -49,7 +49,10 @@ export default function ProductCard({ product, imageUrl }: ProductCardProps) {
         <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-shop-bg/95 border border-shop-text/15 rounded-full pl-2 pr-3 py-1 shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full border border-shop-text/40" />
           <span className="font-body text-sm font-semibold text-shop-text">
-            €{product.price.toFixed(2)}
+            {product.original_price && (
+              <span className="line-through text-shop-text/40 mr-2">€{product.original_price.toFixed(2)}</span>
+            )}
+            <span>€{product.price.toFixed(2)}</span>
           </span>
         </div>
       </div>

@@ -131,9 +131,16 @@ export default async function ProductPage({
             </div>
           </div>
 
-          <p className="font-body text-xl md:text-2xl text-shop-accent font-semibold mb-3">
-            €{price.toFixed(2)}
-          </p>
+          <div className="flex items-baseline gap-2 mb-3">
+            {product.original_price && (
+              <span className="font-body text-lg md:text-xl text-shop-text/40 line-through">
+                €{product.original_price.toFixed(2)}
+              </span>
+            )}
+            <p className="font-body text-xl md:text-2xl text-shop-accent font-semibold">
+              €{price.toFixed(2)}
+            </p>
+          </div>
 
           <span
             className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold mb-4 ${

@@ -20,6 +20,9 @@ export default function AdminDashboard() {
         <Link href="/admin/blog" className="text-shop-accent underline">
           Manage Blog Posts
         </Link>
+        <Link href="/admin/sales" className="text-shop-accent underline">
+          Manage Sales & Discounts
+        </Link>
       </div>
     </div>
   );
