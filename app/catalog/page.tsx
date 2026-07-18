@@ -19,7 +19,7 @@ type SearchParams = {
   sort?: string;
 };
 
-const PRODUCTS_PER_PAGE = 20;
+const PRODUCTS_PER_PAGE = 18;
 
 export default async function CatalogPage({
   searchParams,
@@ -95,7 +95,7 @@ export default async function CatalogPage({
       {/* Products */}
       {products && products.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {products.map((product) => (
               <ProductCard
                 key={product.id}

@@ -5,17 +5,23 @@ import { notFound } from 'next/navigation';
 import { getSortConfig, isValidSortKey } from '../../../lib/sorting';
 import CatalogSortSelect from '../../../components/CatalogSortSelect';
 
+const PRODUCTS_PER_PAGE = 18;
+
 export default async function CategoryPage({
   params,
   searchParams,
 }: {
   params: Promise<{ category: string }>;
-  searchParams: Promise<{ sort?: string; q?: string }>;
+  searchParams: Promise<{ sort?: string; q?: string; page?: string }>;
 }) {
   const { category } = await params;
-  const { sort, q } = await searchParams;
+  const { sort, q, page } = await searchParams;
+  const currentPage = Number(page) || 1;
+  const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const to = from + PRODUCTS_PER_PAGE - 1;
   const sortKey = isValidSortKey(sort) ? sort : 'newest';
   const { column, ascending } = getSortConfig(sortKey);
+  const sortParam = sortKey !== 'newest' ? `&sort=${encodeURIComponent(sortKey)}` : '';
 
   const { data: categoryRow } = await supabase
     .from('categories')
@@ -29,7 +35,7 @@ export default async function CategoryPage({
 
   let query = supabase
     .from('products')
-    .select('*, product_images(url, sort_order)')
+    .select('*, product_images(url, sort_order)', { count: 'exact' })
     .eq('is_active', true)
     .eq('category_id', categoryRow.id);
 
@@ -37,11 +43,18 @@ export default async function CategoryPage({
     query = query.ilike('name', `%${q}%`);
   }
 
-  const { data: products, error } = await query
+  const {
+    data: products,
+    error,
+    count,
+  } = await query
     .order(column, { ascending })
-    .order('id', { ascending: true });
+    .order('id', { ascending: true })
+    .range(from, to);
 
   if (error) console.error(error);
+
+  const totalPages = Math.ceil((count ?? 0) / PRODUCTS_PER_PAGE);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
@@ -69,15 +82,45 @@ export default async function CategoryPage({
       </div>
 
       {products && products.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              imageUrl={product.product_images?.[0]?.url}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                imageUrl={product.product_images?.[0]?.url}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-center items-center gap-4 mt-10">
+            {currentPage > 1 && (
+              <Link
+                href={`/catalog/${category}?page=${currentPage - 1}${
+                  q ? `&q=${encodeURIComponent(q)}` : ''
+                }${sortParam}`}
+                className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
+              >
+                &lt;
+              </Link>
+            )}
+
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+
+            {currentPage < totalPages && (
+              <Link
+                href={`/catalog/${category}?page=${currentPage + 1}${
+                  q ? `&q=${encodeURIComponent(q)}` : ''
+                }${sortParam}`}
+                className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
+              >
+                &gt;
+              </Link>
+            )}
+          </div>
+        </>
       ) : (
         <p>No products found in this category.</p>
       )}

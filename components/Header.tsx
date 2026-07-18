@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useFavorites } from '@/context/FavoritesContext';
 import Link from 'next/link';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, Heart } from 'lucide-react';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   const { items } = useCart();
+  const { favoriteIds } = useFavorites();
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -35,6 +37,20 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
+          {/* Favorites icon */}
+          <Link
+            href="/favorites"
+            className="relative flex items-center text-shop-text hover:text-shop-accent transition-colors"
+            aria-label={`Favorites, ${favoriteIds.length} item${favoriteIds.length === 1 ? '' : 's'}`}
+          >
+            <Heart className="h-6 w-6" />
+            {favoriteIds.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-shop-accent text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                {favoriteIds.length}
+              </span>
+            )}
+          </Link>
+
           {/* Cart icon */}
           <Link
             href="/cart"
