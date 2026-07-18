@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
 import { useFavorites } from '@/context/FavoritesContext';
 import { supabase } from '@/lib/supabase';
 import ProductCard from '@/components/ProductCard';
@@ -40,15 +41,7 @@ export default function FavoritesPage() {
     return (
       <div className="max-w-6xl mx-auto px-4 py-24 text-center">
         <div className="mx-auto mb-6 w-16 h-16 rounded-full border border-shop-text/20 flex items-center justify-center">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            className="w-8 h-8 text-shop-text/40"
-          >
-            <path d="M12 21s-6.7-4.35-9.3-8.28C1.1 10.6 1 8.9 2.1 7.4 3.2 5.9 5.4 5.5 7 6.7c.9.66 1.6 1.5 2 2.3.4-.8 1.1-1.64 2-2.3 1.6-1.2 3.8-.8 4.9.7 1.1 1.5 1 3.2-.6 5.32C18.7 16.65 12 21 12 21z" />
-          </svg>
+          <Heart className="w-8 h-8 text-shop-text/40" strokeWidth={1.5} />
         </div>
         <h1 className="font-display text-2xl text-shop-text mb-2">No favorites yet</h1>
         <p className="text-shop-text/60 mb-8">

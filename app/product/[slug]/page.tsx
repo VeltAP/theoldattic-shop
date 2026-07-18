@@ -5,6 +5,7 @@ import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
 import ProductGallery from '../../../components/ProductGallery';
 import ShippingEstimator from '../../../components/ShippingEstimator';
+import { FavoriteButton } from '../../../components/FavoriteButton';
 
 export default async function ProductPage({
   params,
@@ -81,9 +82,15 @@ export default async function ProductPage({
         </div>
 
         <div className="flex flex-col w-full min-w-0">
-          <h1 className="font-display text-2xl md:text-4xl text-shop-text mb-1 break-words">
-            {product.name}
-          </h1>
+          <div className="flex items-start justify-between gap-3 mb-1">
+            <h1 className="font-display text-2xl md:text-4xl text-shop-text break-words">
+              {product.name}
+            </h1>
+            <div className="flex-shrink-0 mt-1">
+              <FavoriteButton productId={product.id} />
+            </div>
+          </div>
+
           <p className="font-body text-xl md:text-2xl text-shop-accent font-semibold mb-3">
             €{price.toFixed(2)}
           </p>
