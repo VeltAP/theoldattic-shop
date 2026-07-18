@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useCookieConsent } from '@/context/CookieConsentContext';
 // import { Instagram, Facebook } from 'lucide-react';
 
 const CATEGORY_LINKS = [
@@ -29,6 +32,20 @@ const POLICY_LINKS = [
 //   { href: 'https://facebook.com/yourshop', label: 'Facebook', Icon: Facebook },
 // ];
 
+function CookieSettingsLink() {
+  const { resetConsent } = useCookieConsent();
+
+  return (
+    <button
+      type="button"
+      onClick={resetConsent}
+      className="text-sm underline hover:text-shop-accent transition-colors"
+    >
+      Cookie settings
+    </button>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-shop-bg border-t border-gray-300 mt-16">
@@ -48,6 +65,9 @@ export default function Footer() {
                   oldattic.si@gmail.com
                 </a>
               </p>
+              <div className="pt-2">
+                <CookieSettingsLink />
+              </div>
             </div>
 
             {/* Social icons */}

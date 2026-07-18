@@ -7,11 +7,14 @@ import type { Database } from '../../../lib/database.types';
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
 type ProductImage = Database['public']['Tables']['product_images']['Row'];
+type Tag = Database['public']['Tables']['tags']['Row'];
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+  const [newProductTagIds, setNewProductTagIds] = useState<number[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,20 +28,27 @@ export default function AdminProductsPage() {
   });
 
   useEffect(() => {
-    loadProducts();
-    loadCategories();
+    async function loadInitial() {
+      await Promise.all([loadProducts(), loadCategories(), loadTags()]);
+      setInitialLoading(false);
+    }
+
+    loadInitial();
   }, []);
 
   async function loadProducts() {
-    setLoading(true);
     const { data } = await supabase.from('products').select('*').order('id');
     setProducts(data ?? []);
-    setLoading(false);
   }
 
   async function loadCategories() {
     const { data } = await supabase.from('categories').select('*').order('name');
     setCategories(data ?? []);
+  }
+
+  async function loadTags() {
+    const { data } = await supabase.from('tags').select('*').order('name');
+    setAllTags(data ?? []);
   }
 
   async function updateProduct(id: number, updates: Partial<Product>) {
@@ -70,6 +80,7 @@ export default function AdminProductsPage() {
       category_id: parseInt(formData.get('category_id') as string),
       stock_quantity: parseInt(formData.get('stock_quantity') as string),
       description: formData.get('description') as string,
+      tagIds: newProductTagIds,
     };
 
     const response = await fetch('/api/admin/products', {
@@ -84,6 +95,7 @@ export default function AdminProductsPage() {
     await uploadImages(product.id, files);
 
     form.reset();
+    setNewProductTagIds([]);
     setAdding(false);
     loadProducts();
   }
@@ -127,7 +139,7 @@ export default function AdminProductsPage() {
     loadProducts();
   }
 
-  if (loading) return <p>Loading products…</p>;
+  if (initialLoading) return <p>Loading products…</p>;
 
   return (
     <div className="max-w-5xl mx-auto mt-12">
@@ -148,6 +160,25 @@ export default function AdminProductsPage() {
         </select>
         <input name="stock_quantity" type="number" placeholder="Stock quantity" required className="border p-2 rounded" />
         <textarea name="description" placeholder="Description" className="border p-2 rounded" />
+
+        <label className="text-sm font-medium mt-1">Style / era tags</label>
+        <div className="flex flex-wrap gap-3">
+          {allTags.map((tag) => (
+            <label key={tag.id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={newProductTagIds.includes(tag.id)}
+                onChange={() =>
+                  setNewProductTagIds((prev) =>
+                    prev.includes(tag.id) ? prev.filter((id) => id !== tag.id) : [...prev, tag.id]
+                  )
+                }
+              />
+              {tag.name}
+            </label>
+          ))}
+        </div>
+
         <input name="images" type="file" accept="image/*" multiple className="border p-2 rounded" />
         <button type="submit" disabled={adding} className="bg-shop-accent text-white p-2 rounded">
           {adding ? 'Adding…' : 'Add Product'}
@@ -245,6 +276,8 @@ function EditProductModal({
   const [description, setDescription] = useState(product.description ?? '');
   const [categoryId, setCategoryId] = useState(product.category_id);
   const [images, setImages] = useState<ProductImage[]>([]);
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [saving, setSaving] = useState(false);
   const [newFiles, setNewFiles] = useState<FileList | null>(null);
 
@@ -263,7 +296,20 @@ function EditProductModal({
       }
     }
 
+    async function fetchTags() {
+      const [{ data: tags }, { data: productTags }] = await Promise.all([
+        supabase.from('tags').select('*').order('name'),
+        supabase.from('product_tags').select('tag_id').eq('product_id', product.id),
+      ]);
+
+      if (!ignore) {
+        setAllTags(tags ?? []);
+        setSelectedTagIds((productTags ?? []).map((row) => row.tag_id));
+      }
+    }
+
     fetchImages();
+    fetchTags();
 
     return () => {
       ignore = true;
@@ -288,6 +334,7 @@ function EditProductModal({
       body: JSON.stringify({
         id: product.id,
         updates: { name, description, category_id: categoryId },
+        tagIds: selectedTagIds,
       }),
     });
 
@@ -347,6 +394,24 @@ function EditProductModal({
           rows={4}
           className="border p-2 rounded w-full mb-4"
         />
+
+        <label className="block text-sm mb-1">Style / era tags</label>
+        <div className="flex flex-wrap gap-3 mb-4">
+          {allTags.map((tag) => (
+            <label key={tag.id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={selectedTagIds.includes(tag.id)}
+                onChange={() =>
+                  setSelectedTagIds((prev) =>
+                    prev.includes(tag.id) ? prev.filter((id) => id !== tag.id) : [...prev, tag.id]
+                  )
+                }
+              />
+              {tag.name}
+            </label>
+          ))}
+        </div>
 
         <label className="block text-sm mb-1">Photos</label>
         <div className="grid grid-cols-3 gap-2 mb-3">

@@ -1,7 +1,7 @@
 import { supabaseAdmin } from '../../../../lib/supabaseAdmin';
 
 export async function POST(request: Request) {
-  const { name, price, category_id, stock_quantity, description, slug } = await request.json();
+  const { name, price, category_id, stock_quantity, description, slug, tagIds } = await request.json();
 
   const { data, error } = await supabaseAdmin
     .from('products')
@@ -10,22 +10,47 @@ export async function POST(request: Request) {
     .single();
 
   if (error) return Response.json({ success: false, error: error.message }, { status: 500 });
+
+  if (Array.isArray(tagIds) && tagIds.length > 0) {
+    const { error: tagError } = await supabaseAdmin
+      .from('product_tags')
+      .insert(tagIds.map((tagId: number) => ({ product_id: data.id, tag_id: tagId })));
+
+    if (tagError) {
+      return Response.json({ success: false, error: tagError.message }, { status: 500 });
+    }
+  }
+
   return Response.json({ success: true, product: data });
 }
 
 export async function PATCH(request: Request) {
-  const { id, updates } = await request.json();
+  const { id, updates, tagIds } = await request.json();
 
   const { error } = await supabaseAdmin.from('products').update(updates).eq('id', id);
 
   if (error) return Response.json({ success: false, error: error.message }, { status: 500 });
+
+  if (Array.isArray(tagIds)) {
+    await supabaseAdmin.from('product_tags').delete().eq('product_id', id);
+
+    if (tagIds.length > 0) {
+      const { error: tagError } = await supabaseAdmin
+        .from('product_tags')
+        .insert(tagIds.map((tagId: number) => ({ product_id: id, tag_id: tagId })));
+
+      if (tagError) {
+        return Response.json({ success: false, error: tagError.message }, { status: 500 });
+      }
+    }
+  }
+
   return Response.json({ success: true });
 }
 
 export async function DELETE(request: Request) {
   const { id } = await request.json();
 
-  // Find every image row for this product first, so we can also remove the actual files
   const { data: images } = await supabaseAdmin
     .from('product_images')
     .select('url')
@@ -40,8 +65,6 @@ export async function DELETE(request: Request) {
     await supabaseAdmin.storage.from('product-images').remove(paths);
   }
 
-  // Deleting the product row also removes its product_images rows automatically
-  // if your foreign key was set up with ON DELETE CASCADE; otherwise delete them explicitly first
   await supabaseAdmin.from('product_images').delete().eq('product_id', id);
   const { error } = await supabaseAdmin.from('products').delete().eq('id', id);
 
