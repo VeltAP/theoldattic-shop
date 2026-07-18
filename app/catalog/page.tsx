@@ -1,6 +1,8 @@
-import { supabase } from "../../lib/supabase";
-import ProductCard from "../../components/ProductCard";
 import Link from "next/link";
+import ProductCard from "../../components/ProductCard";
+import { supabase } from "../../lib/supabase";
+import { getSortConfig, isValidSortKey } from "@/lib/sorting";
+import CatalogSortSelect from "../../components/CatalogSortSelect";
 
 const categories = [
   { name: "Lighting", slug: "lighting" },
@@ -14,6 +16,7 @@ const categories = [
 type SearchParams = {
   q?: string;
   page?: string;
+  sort?: string;
 };
 
 const PRODUCTS_PER_PAGE = 20;
@@ -23,11 +26,14 @@ export default async function CatalogPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { q, page } = await searchParams;
+  const { q, page, sort } = await searchParams;
 
   const currentPage = Number(page) || 1;
   const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const to = from + PRODUCTS_PER_PAGE - 1;
+  const sortKey = isValidSortKey(sort) ? sort : "newest";
+  const { column, ascending } = getSortConfig(sortKey);
+  const sortParam = sortKey !== "newest" ? `&sort=${encodeURIComponent(sortKey)}` : "";
 
   let query = supabase
     .from("products")
@@ -42,7 +48,10 @@ export default async function CatalogPage({
     data: products,
     error,
     count,
-  } = await query.range(from, to);
+  } = await query
+    .order(column, { ascending })
+    .order("id", { ascending: true })
+    .range(from, to);
 
   if (error) console.error(error);
 
@@ -69,16 +78,19 @@ export default async function CatalogPage({
         ))}
       </nav>
 
-      {/* Search */}
-      <form className="flex justify-center mb-10">
-        <input
-          type="text"
-          name="q"
-          defaultValue={q ?? ""}
-          placeholder="Search products..."
-          className="w-full max-w-md border border-gray-300 rounded px-4 py-2"
-        />
-      </form>
+      {/* Search + Sort, same row */}
+      <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
+        <form className="flex-1 max-w-md">
+          <input
+            type="text"
+            name="q"
+            defaultValue={q ?? ""}
+            placeholder="Search products..."
+            className="w-full border border-gray-300 rounded px-4 py-2"
+          />
+        </form>
+        <CatalogSortSelect currentSort={sortKey} />
+      </div>
 
       {/* Products */}
       {products && products.length > 0 ? (
@@ -100,7 +112,7 @@ export default async function CatalogPage({
               <Link
                 href={`/catalog?page=${currentPage - 1}${
                   q ? `&q=${encodeURIComponent(q)}` : ""
-                }`}
+                }${sortParam}`}
                 className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
               >
                 &lt;
@@ -115,7 +127,7 @@ export default async function CatalogPage({
               <Link
                 href={`/catalog?page=${currentPage + 1}${
                   q ? `&q=${encodeURIComponent(q)}` : ""
-                }`}
+                }${sortParam}`}
                 className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
               >
                 &gt;

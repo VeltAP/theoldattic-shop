@@ -1,4 +1,5 @@
 import { supabase } from '../../../lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import AddToCartButton from '../../../components/AddToCartButton';
@@ -21,6 +22,10 @@ export default async function ProductPage({
 
   if (!product) {
     notFound();
+  }
+
+  if (product) {
+    await supabaseAdmin.rpc('increment_view_count', { target_id: product.id });
   }
 
   if (product.category_id == null) return null;
