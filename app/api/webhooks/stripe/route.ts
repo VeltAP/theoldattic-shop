@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (!existing) {
-      const address = session.customer_details?.address;
+      const address = session.collected_information?.shipping_details?.address ?? session.customer_details?.address;
       const cartItems: { id: number; name: string; qty: number; price: number }[] = JSON.parse(
         session.metadata?.cart ?? '[]'
       );
