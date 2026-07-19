@@ -1,11 +1,13 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminStatsPage() {
   // 1. All paid orders
   const { data: paidOrders } = await supabaseAdmin
-    .from('orders')
-    .select('id, total, shipping_country')
-    .eq('status', 'paid');
+  .from('orders')
+  .select('id, total, shipping_country')
+  .in('status', ['paid', 'shipped']);
 
   const orders = paidOrders ?? [];
   const orderIds = orders.map((o) => o.id);

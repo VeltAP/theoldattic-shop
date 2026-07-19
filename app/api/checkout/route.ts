@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '../../../lib/stripe';
+import type Stripe from 'stripe';
+import { ALL_SHIPPING_COUNTRY_CODES } from '../../../lib/zones';
 
 type CheckoutCartItem = {
   name: string;
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
       payment_method_types: ['card'],
       line_items,
       shipping_address_collection: {
-        allowed_countries: ['SI', 'DE', 'AT', 'IT', 'FR', 'US', 'GB'],
+        allowed_countries: ALL_SHIPPING_COUNTRY_CODES as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[],
       },
       phone_number_collection: { enabled: true },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
