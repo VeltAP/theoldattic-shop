@@ -61,8 +61,8 @@ export default function Footer() {
               <p>Miklavz pri Taboru 61a, 3304 Tabor, Slovenia</p>
               <p>VAT ID: SI 34875590</p>
               <p>
-                <a href="mailto:oldattic.si@gmail.com" className="hover:text-shop-accent transition-colors">
-                  oldattic.si@gmail.com
+                <a href="mailto:theoldatticshop@gmail.com" className="hover:text-shop-accent transition-colors">
+                  theoldatticshop@gmail.com
                 </a>
               </p>
               <div className="pt-2">

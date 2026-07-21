@@ -122,7 +122,7 @@ export default function ContactPage() {
         </h2>
 
         <p className="mb-2">
-          <strong>Email:</strong> oldattic.si@gmail.com
+          <strong>Email:</strong> theoldatticshop@gmail.com
         </p>
 
         <p className="mb-2">

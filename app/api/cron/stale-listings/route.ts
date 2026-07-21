@@ -87,7 +87,7 @@ function renderDigestHtml(staleProducts: StaleProduct[], soldProducts: SoldProdu
       (p) => `
         <tr>
           <td style="padding: 8px 0;">
-            <a href="https://theoldattic-shop.vercel.app/product/${p.slug ?? ''}">${p.name}</a>
+            <a href="https://theoldattic-shop.com/product/${p.slug ?? ''}">${p.name}</a>
           </td>
           <td style="padding: 8px 0;">${p.categories?.name ?? '—'}</td>
           <td style="padding: 8px 0; text-align: right;">€${p.price.toFixed(2)}</td>

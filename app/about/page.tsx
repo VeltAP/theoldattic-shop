@@ -184,7 +184,7 @@ export default function AboutPage() {
           <p>Miklavž pri Taboru 61a</p>
           <p>3304 Tabor, Slovenia</p>
           <p className="mt-3">+386 40 867 303 &nbsp;·&nbsp; +386 30 608 198</p>
-          <p className="mt-3">oldattic.si@gmail.com &nbsp;·&nbsp; VAT: SI3487559</p>
+          <p className="mt-3">theoldatticshop@gmail.com &nbsp;·&nbsp; VAT: SI3487559</p>
         </section>
 
         <section className="mb-24">
