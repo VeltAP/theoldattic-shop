@@ -1,7 +1,3 @@
-export const SLOVENIA_ZONE_ID = 1;
-export const EU_ZONE_ID = 2;
-export const WORLDWIDE_ZONE_ID = 3;
-
 export const EU_COUNTRY_CODES = [
   'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI',
   'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT',
@@ -17,7 +13,9 @@ export const OTHER_SHIPPING_COUNTRY_CODES = [
   // North America
   'US', // United States
   'CA', // Canada
+  'MX', // Mexico
 
+  // Asia
   'JP', // Japan
   'KR', // South Korea
   'SG', // Singapore
@@ -90,16 +88,6 @@ export const countryNames: Record<string, string> = {
   KW: 'Kuwait',
   BH: 'Bahrain',
 };
-
-export const countryToZone: Record<string, number> = {
-  SI: SLOVENIA_ZONE_ID,
-  ...Object.fromEntries(EU_COUNTRY_CODES.map((code) => [code, EU_ZONE_ID])),
-  ...Object.fromEntries(OTHER_SHIPPING_COUNTRY_CODES.map((code) => [code, WORLDWIDE_ZONE_ID])),
-};
-
-export function getZoneForCountry(countryCode: string): number | null {
-  return countryToZone[countryCode] ?? null;
-}
 
 export const ALL_SHIPPING_COUNTRY_CODES = ['SI', ...EU_COUNTRY_CODES, ...OTHER_SHIPPING_COUNTRY_CODES];
 

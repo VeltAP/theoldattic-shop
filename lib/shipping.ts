@@ -16,15 +16,16 @@ export type ShippingZone = {
   countryCodes: string[];
 };
 
-// Step A: figure out which zone a country belongs to
 export function getZoneForCountry(
   countryCode: string,
   zones: ShippingZone[]
 ): ShippingZone | undefined {
-  return zones.find((zone) => zone.countryCodes.includes(countryCode));
+  return (
+    zones.find((zone) => zone.countryCodes.includes(countryCode)) ??
+    zones.find((zone) => zone.countryCodes.includes('*'))
+  );
 }
 
-// Step B: calculate the total shipping cost for the whole cart
 export function calculateShipping(
   items: CartShippingItem[],
   zoneId: number,
