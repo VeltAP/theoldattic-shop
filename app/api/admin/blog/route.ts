@@ -54,6 +54,10 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const body = await request.json();
   const { id, title, excerpt, content_html, cover_image, published } = body;
 
@@ -85,6 +89,10 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { id } = await request.json();
 
   const { error } = await supabaseAdmin.from('posts').delete().eq('id', id);

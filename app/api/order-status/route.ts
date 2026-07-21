@@ -1,7 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: Request) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+
+  const { allowed } = await checkRateLimit(`order-status:${ip}`);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Too many attempts. Please try again in a few minutes.' },
+      { status: 429 }
+    );
+  }
+
   const { orderId, email } = await request.json();
 
   if (!orderId || !email) {
@@ -16,9 +27,6 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (!order) {
-    // Same error whether the order ID doesn't exist or the email doesn't match it —
-    // being specific about which one was wrong would let someone brute-force
-    // order IDs against a guessed email, one bit of information at a time.
     return NextResponse.json(
       { error: "We couldn't find an order with that number and email." },
       { status: 404 }
