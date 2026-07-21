@@ -13,6 +13,8 @@ type Product = {
   product_tags: { tag_id: number }[];
 };
 
+type MessageState = { text: string; type: 'success' | 'error' } | null;
+
 const STALE_DAYS = 60;
 
 export function SalesManager({
@@ -32,7 +34,7 @@ export function SalesManager({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [discountPercent, setDiscountPercent] = useState(10);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<MessageState>(null);
 
   const [now] = useState(() => Date.now());
   const staleCutoff = now - STALE_DAYS * 24 * 60 * 60 * 1000;
@@ -65,14 +67,18 @@ export function SalesManager({
   async function applyDiscount() {
     if (selectedIds.length === 0) return;
     setLoading(true);
-    setMessage('');
+    setMessage(null);
     const res = await fetch('/api/admin/products/bulk-discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productIds: selectedIds, discountPercent }),
     });
     setLoading(false);
-    setMessage(res.ok ? `Applied ${discountPercent}% off to ${selectedIds.length} item(s).` : 'Something went wrong.');
+    setMessage(
+      res.ok
+        ? { text: `Applied ${discountPercent}% off to ${selectedIds.length} item(s).`, type: 'success' }
+        : { text: 'Something went wrong — the discount was not applied.', type: 'error' }
+    );
     if (res.ok) {
       setSelectedIds([]);
       router.refresh();
@@ -82,14 +88,18 @@ export function SalesManager({
   async function removeDiscount() {
     if (selectedIds.length === 0) return;
     setLoading(true);
-    setMessage('');
+    setMessage(null);
     const res = await fetch('/api/admin/products/remove-discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productIds: selectedIds }),
     });
     setLoading(false);
-    setMessage(res.ok ? `Removed discount from ${selectedIds.length} item(s).` : 'Something went wrong.');
+    setMessage(
+      res.ok
+        ? { text: `Removed discount from ${selectedIds.length} item(s).`, type: 'success' }
+        : { text: 'Something went wrong — the discount was not removed.', type: 'error' }
+    );
     if (res.ok) {
       setSelectedIds([]);
       router.refresh();
@@ -100,14 +110,10 @@ export function SalesManager({
     createdAt ? Math.floor((now - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)) : null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="font-display text-2xl text-shop-text mb-6">Sales & Discounts</h1>
-
-      {/* Filters card */}
-      <div className="bg-white border border-gray-200 rounded-lg p-5 mb-5">
-        <h2 className="text-sm font-semibold text-shop-text/70 uppercase tracking-wide mb-4">
-          Find items
-        </h2>
+    <div>
+      {/* Filters */}
+      <div className="border rounded p-4 mb-6">
+        <h2 className="font-display text-lg text-shop-text mb-4">Find items</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-xs text-shop-text/60 mb-1">Search by name</label>
@@ -115,7 +121,7 @@ export function SalesManager({
               placeholder="e.g. brass lamp"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-shop-accent"
             />
           </div>
           <div>
@@ -123,7 +129,7 @@ export function SalesManager({
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-shop-accent"
             >
               <option value="all">All categories</option>
               {categories.map((c) => (
@@ -136,7 +142,7 @@ export function SalesManager({
             <select
               value={tagFilter}
               onChange={(e) => setTagFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-shop-accent"
             >
               <option value="all">All tags</option>
               {tags.map((t) => (
@@ -144,15 +150,15 @@ export function SalesManager({
               ))}
             </select>
           </div>
-          <div className="flex items-end">
-            <label className="flex items-center gap-2 text-sm text-shop-text/80 pb-2">
+          <div className="flex items-end pb-2">
+            <label className="flex items-center gap-2 text-sm text-shop-text/80">
               <input type="checkbox" checked={staleOnly} onChange={(e) => setStaleOnly(e.target.checked)} />
               60+ days listed only
             </label>
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t">
           <span className="text-sm text-shop-text/60">
             {filtered.length} item{filtered.length === 1 ? '' : 's'} match{filtered.length === 1 ? 'es' : ''}
           </span>
@@ -167,11 +173,9 @@ export function SalesManager({
       </div>
 
       {/* Action bar */}
-      <div className="sticky top-0 z-10 bg-white border border-gray-200 rounded-lg p-4 mb-5 shadow-sm">
+      <div className="border rounded p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4">
-          <span className="text-sm font-medium text-shop-text">
-            {selectedIds.length} selected
-          </span>
+          <span className="text-sm font-medium text-shop-text">{selectedIds.length} selected</span>
 
           <label className="flex items-center gap-2 text-sm text-shop-text/80">
             Discount
@@ -181,7 +185,7 @@ export function SalesManager({
               max={99}
               value={discountPercent}
               onChange={(e) => setDiscountPercent(Number(e.target.value))}
-              className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm"
+              className="w-16 border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-shop-accent"
             />
             %
           </label>
@@ -189,7 +193,7 @@ export function SalesManager({
           <button
             onClick={applyDiscount}
             disabled={selectedIds.length === 0 || loading}
-            className="bg-shop-accent text-white px-4 py-1.5 rounded text-sm font-medium disabled:opacity-40"
+            className="bg-shop-accent text-white px-4 py-1.5 rounded text-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
           >
             {loading ? 'Applying…' : 'Apply discount'}
           </button>
@@ -197,27 +201,29 @@ export function SalesManager({
           <button
             onClick={removeDiscount}
             disabled={selectedIds.length === 0 || loading}
-            className="border border-gray-300 px-4 py-1.5 rounded text-sm font-medium disabled:opacity-40"
+            className="border px-4 py-1.5 rounded text-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Remove discount
           </button>
 
           {message && (
-            <span className="text-sm text-green-700 ml-auto">{message}</span>
+            <span className={`text-sm ml-auto ${message.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>
+              {message.text}
+            </span>
           )}
         </div>
       </div>
 
       {/* Results table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="overflow-x-auto border rounded">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200 text-left text-shop-text/60">
+            <tr className="text-left border-b">
               <th className="p-3 w-10"></th>
               <th className="p-3">Name</th>
               <th className="p-3">Category</th>
               <th className="p-3 text-right">Price</th>
-              <th className="p-3 text-right">Listed for</th>
+              <th className="p-3 text-right whitespace-nowrap">Listed for</th>
             </tr>
           </thead>
           <tbody>
@@ -225,10 +231,7 @@ export function SalesManager({
               const days = daysListed(p.created_at);
               const isSelected = selectedIds.includes(p.id);
               return (
-                <tr
-                  key={p.id}
-                  className={`border-b border-gray-100 last:border-0 ${isSelected ? 'bg-shop-accent/5' : ''}`}
-                >
+                <tr key={p.id} className={`border-b last:border-b-0 ${isSelected ? 'bg-shop-accent/5' : ''}`}>
                   <td className="p-3">
                     <input type="checkbox" checked={isSelected} onChange={() => toggle(p.id)} />
                   </td>
@@ -246,7 +249,7 @@ export function SalesManager({
                       <span>€{p.price.toFixed(2)}</span>
                     )}
                   </td>
-                  <td className="p-3 text-right text-shop-text/60">
+                  <td className="p-3 text-right text-shop-text/60 whitespace-nowrap">
                     {days !== null ? `${days} days` : '—'}
                   </td>
                 </tr>
