@@ -1,9 +1,18 @@
 import Link from 'next/link';
+import { logout } from './actions';
 
 export default function AdminDashboard() {
   return (
     <div className="max-w-2xl mx-auto mt-12">
-      <h1 className="font-display text-3xl text-shop-text mb-6">Admin Dashboard</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-display text-3xl text-shop-text">Admin Dashboard</h1>
+        <form action={logout}>
+          <button type="submit" className="text-sm text-red-600 underline">
+            Log out
+          </button>
+        </form>
+      </div>
+
       <div className="flex flex-col gap-3">
         <Link href="/admin/products" className="text-shop-accent underline">
           Manage Products

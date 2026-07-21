@@ -1,6 +1,10 @@
 import { supabaseAdmin } from '../../../../lib/supabaseAdmin';
+import { requireAdmin } from '../../../../lib/requireAdmin';
 
 export async function POST(request: Request) {
+  if (!(await requireAdmin())) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const { name, price, category_id, stock_quantity, description, slug, tagIds } = await request.json();
 
   const { data, error } = await supabaseAdmin

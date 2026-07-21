@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 export async function POST(request: Request) {
-  // same admin-session check
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   const { productIds } = await request.json();
   if (!Array.isArray(productIds) || productIds.length === 0) {

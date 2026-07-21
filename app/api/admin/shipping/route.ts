@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../../../lib/supabaseAdmin';
+import { requireAdmin } from '../../../../lib/requireAdmin';
 
 export async function GET() {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { data, error } = await supabaseAdmin
     .from('shipping_rates')
     .select('id, rate, category_id, categories(name), zone_id, shipping_zones(name)')
@@ -17,12 +22,13 @@ export async function GET() {
 type UpdateBody = { id: number; rate: number };
 
 export async function PATCH(request: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { id, rate }: UpdateBody = await request.json();
 
-  const { error } = await supabaseAdmin
-    .from('shipping_rates')
-    .update({ rate })
-    .eq('id', id);
+  const { error } = await supabaseAdmin.from('shipping_rates').update({ rate }).eq('id', id);
 
   if (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

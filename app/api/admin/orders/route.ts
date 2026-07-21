@@ -1,6 +1,10 @@
 import { supabaseAdmin } from '../../../../lib/supabaseAdmin';
+import { requireAdmin } from '../../../../lib/requireAdmin';
 
 export async function GET() {
+  if (!(await requireAdmin())) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const { data, error } = await supabaseAdmin
     .from('orders')
     .select('*')

@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 export async function POST(request: Request) {
-  // same admin-session check as your other /api/admin/* routes
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   const { productIds, discountPercent } = await request.json();
 
@@ -23,8 +26,6 @@ export async function POST(request: Request) {
   }
 
   for (const p of products) {
-    // Base the discount off original_price if one already exists, so applying
-    // a second discount later doesn't stack on top of an already-discounted price.
     const basePrice = p.original_price ?? p.price;
     const newPrice = Math.round(basePrice * (1 - discountPercent / 100) * 100) / 100;
 

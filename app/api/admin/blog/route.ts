@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import sanitizeHtml from 'sanitize-html';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import type { Database } from '@/lib/database.types';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 type PostUpdate = Database['public']['Tables']['posts']['Update'];
 
@@ -24,6 +25,9 @@ function cleanHtml(html: string): string {
 }
 
 export async function POST(request: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const body = await request.json();
   const { title, excerpt, content_html, cover_image, published } = body;
 

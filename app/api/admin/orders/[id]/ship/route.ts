@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { sendShipmentEmail } from '@/lib/email/shipmentNotification';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { id } = await params;
   const orderId = Number(id);
   const { trackingNumber, carrier } = await request.json();
