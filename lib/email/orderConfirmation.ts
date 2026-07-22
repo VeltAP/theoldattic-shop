@@ -66,7 +66,7 @@ function renderOrderEmailHtml(order: Order, items: OrderItem[]): string {
 
 export async function sendOrderConfirmationEmail(order: Order, items: OrderItem[]) {
   await resend.emails.send({
-    from: 'The Old Attic <onboarding@resend.dev>', // swap once domain verified
+    from: 'The Old Attic <orders@theoldattic-shop.com>',
     to: [order.customer_email],
     subject: `Your order confirmation — The Old Attic (#${order.id})`,
     html: renderOrderEmailHtml(order, items),

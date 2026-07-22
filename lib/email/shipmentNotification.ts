@@ -23,7 +23,7 @@ export async function sendShipmentEmail(order: {
     .join('');
 
   await resend.emails.send({
-    from: 'The Old Attic <onboarding@resend.dev>', // swap once domain verified
+    from: 'The Old Attic <orders@theoldattic-shop.com>',
     to: [order.customer_email],
     subject: `Your order #${order.id} has shipped!`,
     html: `
