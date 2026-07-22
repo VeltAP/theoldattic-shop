@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// --- Mocks ---
 const constructEventMock = vi.fn();
 
 vi.mock('@/lib/stripe', () => ({
@@ -95,7 +94,6 @@ describe('Stripe webhook handler', () => {
       },
     });
 
-    // simulate: this session was already processed before
     maybeSingleMock.mockResolvedValue({ data: { id: 1 } });
 
     await POST(makeRequest('{}'));
@@ -117,7 +115,6 @@ describe('Stripe webhook handler', () => {
       },
     });
 
-    // simulate: no existing order found for this session
     maybeSingleMock.mockResolvedValue({ data: null });
 
     await POST(makeRequest('{}'));

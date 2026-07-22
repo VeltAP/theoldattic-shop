@@ -12,8 +12,6 @@ type FavoritesContextValue = {
 
 const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
 
-// --- External store: localStorage + tiny pub/sub, same pattern as CartContext ---
-
 const listeners = new Set<() => void>();
 function emitChange() {
   for (const listener of listeners) listener();
@@ -58,8 +56,6 @@ function writeFavorites(ids: number[]) {
   window.localStorage.setItem(STORAGE_KEY, cachedRaw);
   emitChange();
 }
-
-// --- Provider ---
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const favoriteIds = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

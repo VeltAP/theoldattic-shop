@@ -30,7 +30,7 @@ export function ShipOrderButton({
     setLoading(false);
     if (res.ok) {
       setOpen(false);
-      onShipped(); // ask the parent page to refetch orders
+      onShipped();
     }
   }
 

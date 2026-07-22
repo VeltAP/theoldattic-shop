@@ -111,7 +111,6 @@ export function SalesManager({
 
   return (
     <div>
-      {/* Filters */}
       <div className="border rounded p-4 mb-6">
         <h2 className="font-display text-lg text-shop-text mb-4">Find items</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -214,7 +213,6 @@ export function SalesManager({
         </div>
       </div>
 
-      {/* Results table */}
       <div className="overflow-x-auto border rounded">
         <table className="w-full text-sm">
           <thead>

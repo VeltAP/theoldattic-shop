@@ -23,7 +23,7 @@ export default function CatalogStatusFilter({
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const params = new URLSearchParams(searchParams.toString());
     params.set('status', e.target.value);
-    params.delete('page'); // reset to page 1 when filter changes
+    params.delete('page');
     router.push(`${basePath}?${params.toString()}`);
   }
 

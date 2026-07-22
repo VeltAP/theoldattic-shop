@@ -61,7 +61,7 @@ export function RecentlyViewedProvider({ children }: { children: ReactNode }) {
 
   const addView = useCallback((id: number) => {
     const current = getSnapshot();
-    if (current[0] === id) return; // already most-recent — avoid a needless write/notify loop
+    if (current[0] === id) return;
     const next = [id, ...current.filter((existing) => existing !== id)].slice(0, MAX_ITEMS);
     writeRecentIds(next);
   }, []);

@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useCookieConsent } from '@/context/CookieConsentContext';
-// import { Instagram, Facebook } from 'lucide-react';
 
 const CATEGORY_LINKS = [
   { href: '/catalog/lighting', label: 'Light & Lamps' },
@@ -27,10 +26,6 @@ const POLICY_LINKS = [
   { href: '/policy/returns-policy', label: 'Returns & Refunds' },
 ];
 
-// const SOCIAL_LINKS = [
-//   { href: 'https://instagram.com/yourshop', label: 'Instagram', Icon: Instagram },
-//   { href: 'https://facebook.com/yourshop', label: 'Facebook', Icon: Facebook },
-// ];
 
 function CookieSettingsLink() {
   const { resetConsent } = useCookieConsent();
@@ -51,7 +46,6 @@ export default function Footer() {
     <footer className="bg-shop-bg border-t border-gray-300 mt-16">
       <div className="max-w-6xl mx-auto px-4 py-12 font-body text-sm text-shop-text">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Logo + company info */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2 font-display text-2xl text-shop-text">
               The Old Attic
@@ -69,25 +63,8 @@ export default function Footer() {
                 <CookieSettingsLink />
               </div>
             </div>
-
-            {/* Social icons */}
-            {/* <div className="flex gap-4 mt-4">
-              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
-                
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="text-shop-text hover:text-shop-accent transition-colors"
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div> */}
           </div>
 
-          {/* Sitemap: shop categories */}
           <div>
             <h3 className="font-semibold text-shop-text mb-3">Shop</h3>
             <ul className="space-y-2">
@@ -101,7 +78,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Sitemap: shop info pages */}
+
           <div>
             <h3 className="font-semibold text-shop-text mb-3">Shop Info</h3>
             <ul className="space-y-2">
@@ -115,7 +92,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Policy pages */}
           <div>
             <h3 className="font-semibold text-shop-text mb-3">Policies</h3>
             <ul className="space-y-2">

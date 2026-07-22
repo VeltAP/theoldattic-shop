@@ -50,7 +50,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
 
   const resetConsent = useCallback(() => {
     window.localStorage.removeItem(STORAGE_KEY);
-    emitChange(); // banner reappears so the visitor can choose again
+    emitChange();
   }, []);
 
   return (

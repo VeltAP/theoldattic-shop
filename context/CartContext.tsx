@@ -23,7 +23,6 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 const STORAGE_KEY = 'vintage-shop-cart';
 
-// --- The "external store": localStorage itself, plus a tiny pub/sub ---
 
 const listeners = new Set<() => void>();
 function emitChange() {
@@ -32,7 +31,6 @@ function emitChange() {
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
-  // Also react if the cart changes in ANOTHER browser tab
   function onStorage(e: StorageEvent) {
     if (e.key === STORAGE_KEY) emitChange();
   }
@@ -43,9 +41,6 @@ function subscribe(listener: () => void) {
   };
 }
 
-// useSyncExternalStore requires getSnapshot to return the SAME reference
-// if nothing changed, so we cache the parsed result and only reparse
-// when the raw string actually differs.
 let cachedRaw: string | null = null;
 let cachedItems: CartItem[] = [];
 const EMPTY_CART: CartItem[] = [];
@@ -64,7 +59,7 @@ function getSnapshot(): CartItem[] {
 }
 
 function getServerSnapshot(): CartItem[] {
-  return EMPTY_CART; // server always sees an empty cart — matches client's first paint
+  return EMPTY_CART;
 }
 
 function writeCart(items: CartItem[]) {
@@ -74,7 +69,6 @@ function writeCart(items: CartItem[]) {
   emitChange();
 }
 
-// --- The actual Provider ---
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const items = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

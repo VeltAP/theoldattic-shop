@@ -43,7 +43,9 @@ export function RecentlyViewedStrip({ excludeId }: { excludeId?: number }) {
   function scroll(direction: 'left' | 'right') {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = 176 + 16; // w-44 (176px) + gap-4 (16px)
+    const cardWidth = 176 + 16;
+    //const cardWidth = el.querySelector('.w-44')?.clientWidth ?? 176 + 16;
+    //const cardWidth = 180 + 16;
     el.scrollBy({ left: direction === 'left' ? -cardWidth * 2 : cardWidth * 2, behavior: 'smooth' });
   }
 

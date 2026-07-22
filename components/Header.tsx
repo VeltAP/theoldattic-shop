@@ -28,7 +28,6 @@ export default function Header() {
           The Old Attic
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex gap-6 font-body text-shop-text">
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-shop-accent transition-colors">
@@ -38,7 +37,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {/* Favorites icon */}
           <Link
             href="/favorites"
             className="relative flex items-center text-shop-text hover:text-shop-accent transition-colors"
@@ -52,7 +50,6 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Cart icon */}
           <Link
             href="/cart"
             className="relative flex items-center text-shop-text hover:text-shop-accent transition-colors"
@@ -66,7 +63,6 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Mobile menu toggle */}
           <button
             className="md:hidden text-shop-text"
             onClick={() => setMenuOpen((open) => !open)}
@@ -78,7 +74,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile nav panel */}
       {menuOpen && (
         <nav className="md:hidden flex flex-col gap-1 px-4 pb-4 font-body text-shop-text border-t border-gray-300 pt-3">
           {NAV_LINKS.map((link) => (

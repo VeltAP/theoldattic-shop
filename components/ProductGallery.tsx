@@ -52,7 +52,6 @@ export default function ProductGallery({
 
   return (
     <div className="w-full min-w-0">
-      {/* Main photo */}
       <div
         className="relative w-full aspect-square bg-gray-200 rounded-lg overflow-hidden mb-3 touch-pan-y"
         onTouchStart={handleTouchStart}
@@ -87,7 +86,6 @@ export default function ProductGallery({
               <ChevronRight className="h-5 w-5" />
             </button>
 
-            {/* Dot indicators */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
               {images.map((_, i) => (
                 <span
@@ -102,7 +100,6 @@ export default function ProductGallery({
         )}
       </div>
 
-      {/* Thumbnail strip */}
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory w-full min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {images.map((img, i) => (

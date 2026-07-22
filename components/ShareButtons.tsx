@@ -29,7 +29,7 @@ export function ShareButtons({ url, title, image }: { url: string; title: string
     try {
       await navigator.share({ title, url });
     } catch {
-      // user cancelled the native share sheet — nothing to do
+      //??
     }
   };
 

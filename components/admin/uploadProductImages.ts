@@ -2,11 +2,6 @@ import { supabase } from '@/lib/supabase';
 
 export type UploadResult = { succeeded: number; failed: number };
 
-// Previously this logic lived inline in the page component and was passed
-// down as a prop function to the edit modal. Pulling it out here means the
-// add-product flow and the edit-product flow both call the exact same
-// upload logic directly, rather than one of them depending on a function
-// handed down through props from a component two levels up.
 export async function uploadProductImages(productId: number, files: File[]): Promise<UploadResult> {
   let succeeded = 0;
   let failed = 0;
