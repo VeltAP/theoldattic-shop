@@ -13,7 +13,7 @@ export default function TermsOfServicePage() {
       <p>
         We sell genuine vintage furniture and décor. Each item is unique,
         sold in the condition described and photographed, and once sold is
-        removed from the site — we don&apos;t restock the same piece twice.
+        removed from the site - we don&apos;t restock the same piece twice.
         Colors may vary slightly from photos due to lighting and screen
         settings.
       </p>
@@ -47,7 +47,7 @@ export default function TermsOfServicePage() {
 
       <h2>Use of This Website</h2>
       <p>
-        You agree not to misuse this site — including attempting to
+        You agree not to misuse this site - including attempting to
         interfere with its normal operation, accessing areas you&apos;re not
         authorized to access, or using the site for any unlawful purpose.
       </p>

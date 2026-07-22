@@ -3,7 +3,6 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminStatsPage() {
-  // 1. All paid orders
   const { data: paidOrders } = await supabaseAdmin
   .from('orders')
   .select('id, total, shipping_country')
@@ -12,12 +11,10 @@ export default async function AdminStatsPage() {
   const orders = paidOrders ?? [];
   const orderIds = orders.map((o) => o.id);
 
-  // 2. Total revenue / order count / average order value
   const orderCount = orders.length;
   const revenue = orders.reduce((sum, o) => sum + (o.total ?? 0), 0);
   const aov = orderCount > 0 ? revenue / orderCount : 0;
 
-  // 3. Orders by country
   const byCountry = orders.reduce<Record<string, number>>((acc, o) => {
     const country = o.shipping_country ?? 'Unknown';
     acc[country] = (acc[country] ?? 0) + 1;
@@ -25,7 +22,6 @@ export default async function AdminStatsPage() {
   }, {});
   const countryRows = Object.entries(byCountry).sort((a, b) => b[1] - a[1]);
 
-  // 4. Revenue by category — order_items for paid orders, embedding product → category
   const { data: orderItems } = orderIds.length
     ? await supabaseAdmin
         .from('order_items')
@@ -40,7 +36,6 @@ export default async function AdminStatsPage() {
 }, {});
   const categoryRevenueRows = Object.entries(revenueByCategory).sort((a, b) => b[1] - a[1]);
 
-  // 5. Time-to-sell by category
   const { data: soldProducts } = await supabaseAdmin
     .from('products')
     .select('created_at, sold_at, categories(name)')
@@ -67,7 +62,6 @@ export default async function AdminStatsPage() {
     <div className="max-w-5xl mx-auto mt-12 pb-20">
       <h1 className="font-display text-2xl text-shop-text mb-8">Stats</h1>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         <div className="border rounded p-4">
           <p className="text-sm text-shop-text/60">Total revenue</p>
@@ -83,7 +77,6 @@ export default async function AdminStatsPage() {
         </div>
       </div>
 
-      {/* Revenue by category */}
       <h2 className="font-display text-xl mb-3">Revenue by category</h2>
       <div className="space-y-2 mb-10">
         {categoryRevenueRows.map(([name, value]) => (
@@ -101,7 +94,6 @@ export default async function AdminStatsPage() {
         {categoryRevenueRows.length === 0 && <p className="text-sm text-shop-text/50">No data yet.</p>}
       </div>
 
-      {/* Orders by country */}
       <h2 className="font-display text-xl mb-3">Orders by country</h2>
       <div className="space-y-2 mb-10">
         {countryRows.map(([country, count]) => (
@@ -119,7 +111,6 @@ export default async function AdminStatsPage() {
         {countryRows.length === 0 && <p className="text-sm text-shop-text/50">No data yet.</p>}
       </div>
 
-      {/* Time to sell by category */}
       <h2 className="font-display text-xl mb-3">Average days to sell by category</h2>
       <div className="space-y-2">
         {avgDaysToSellRows.map(([name, days]) => (

@@ -23,13 +23,11 @@ export async function POST(request: Request) {
       price_data: {
         currency: 'eur',
         product_data: { name: item.name },
-        unit_amount: Math.round(item.price * 100), // Stripe wants cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
 
-    // Add shipping as its own line item, since Stripe's Checkout Session
-    // wants a flat shipping_options rate rather than a per-item one
     line_items.push({
       price_data: {
         currency: 'eur',

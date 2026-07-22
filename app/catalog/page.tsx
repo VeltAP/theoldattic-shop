@@ -53,7 +53,6 @@ export default async function CatalogPage({
   } else if (statusKey === 'sold') {
     query = query.eq('is_active', false);
   }
-  // 'all' — no filter
 
   if (q) {
     query = query.ilike("name", `%${q}%`);
@@ -75,12 +74,10 @@ export default async function CatalogPage({
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
 
-      {/* Title */}
       <h1 className="text-4xl text-center mb-8 font-display">
         Catalog
       </h1>
 
-      {/* Categories */}
       <nav className="flex flex-wrap justify-center gap-3 mb-8">
         {categories.map((cat) => (
           <Link
@@ -93,7 +90,6 @@ export default async function CatalogPage({
         ))}
       </nav>
 
-      {/* Search + Sort + Status, same row */}
       <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
         <form className="flex-1 max-w-md">
           <input
@@ -108,7 +104,6 @@ export default async function CatalogPage({
         <CatalogSortSelect currentSort={sortKey} />
       </div>
 
-      {/* Products */}
       {products && products.length > 0 ? (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -121,7 +116,6 @@ export default async function CatalogPage({
             ))}
           </div>
 
-          {/* Pagination */}
           <div className="flex justify-center items-center gap-4 mt-10">
 
             {currentPage > 1 && (

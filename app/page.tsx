@@ -26,7 +26,6 @@ export default async function HomePage() {
   return (
     <div className="bg-shop-bg text-shop-text">
 
-      {/* Hero */}
       <section className="relative min-h-[560px] flex items-center justify-center border-b border-shop-text/20 overflow-hidden">
 
         <div
@@ -68,7 +67,6 @@ export default async function HomePage() {
 
         </div>
 
-        {/* Signature stamp, echoed from the About page */}
         <div className="hidden md:flex absolute bottom-8 right-10 w-24 h-24 rounded-full border border-shop-accent/40 items-center justify-center rotate-[-6deg]">
           <div className="absolute inset-2 rounded-full border border-shop-accent/40" />
           <p className="text-center font-display text-shop-accent text-xs leading-tight px-3">
@@ -80,7 +78,6 @@ export default async function HomePage() {
 
       </section>
 
-      {/* Brands */}
       <section className="py-14 border-b border-shop-text/20">
 
         <p className="text-center text-xs tracking-[0.2em] uppercase text-shop-accent font-body mb-6">
@@ -100,7 +97,6 @@ export default async function HomePage() {
 
       </section>
 
-      {/* New products */}
       <section className="max-w-6xl mx-auto px-6 py-20">
 
         <div className="flex justify-between items-end mb-10">

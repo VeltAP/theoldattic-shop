@@ -5,11 +5,11 @@ const faqs = [
   },
   {
     q: "What is the delivery time?",
-    a: "European countries: 7–10 business days. USA: 14–28 business days. Canada: 14–28 business days. UK: 14–28 business days. Australia: 21–28 business days. Rest of the world: 21–35 business days. These are estimated delivery times and may vary due to customs processing or other factors beyond our control.",
+    a: "European countries: 7-10 business days. USA: 14-28 business days. Canada: 14-28 business days. UK: 14-28 business days. Australia: 21-28 business days. Rest of the world: 21-35 business days. These are estimated delivery times and may vary due to customs processing or other factors beyond our control.",
   },
   {
     q: "Can you ship faster?",
-    a: "Yes! We can ship with DHL Express or FedEx First Priority, which usually delivers within 2–4 business days. Please contact us for a shipping quote. Keep in mind that express shipping can be quite expensive, especially for larger items.",
+    a: "Yes! We can ship with DHL Express or FedEx First Priority, which usually delivers within 2-4 business days. Please contact us for a shipping quote. Keep in mind that express shipping can be quite expensive, especially for larger items.",
   },
   {
     q: "How do you pack your items?",
@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     q: "Will I need to pay customs fees?",
-    a: "We are located in Slovenia, European Union. Customers within the EU do not pay customs fees. Customers outside the EU may need to pay import duties or taxes depending on their country's regulations. These typically range from 11–25%, but please check with your local customs office for the exact amount.",
+    a: "We are located in Slovenia, European Union. Customers within the EU do not pay customs fees. Customers outside the EU may need to pay import duties or taxes depending on their country's regulations. These typically range from 11-25%, but please check with your local customs office for the exact amount.",
   },
   {
     q: "Can your lamps be used in the US?",

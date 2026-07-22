@@ -3,12 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { supabase } from '@/lib/supabase';
-import {
-  calculateShipping,
-  getZoneForCountry,
-  ShippingRate,
-  ShippingZone,
-} from '@/lib/shipping';
+import {calculateShipping, getZoneForCountry, ShippingRate, ShippingZone, } from '@/lib/shipping';
 import { SHIPPING_COUNTRY_OPTIONS } from '@/lib/zones';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -63,12 +58,6 @@ export default function CartPage() {
     loadShippingData();
   }, []);
 
-  // NOTE: zone matching itself is untouched — it still correctly comes from
-  // lib/shipping.ts reading the real shipping_zones rows fetched above
-  // (including the '*' wildcard for Worldwide). Only the dropdown's country
-  // *options* now come from the shared lib/zones.ts list, so this page,
-  // Stripe's allowed_countries, and the product page's shipping estimator
-  // all offer exactly the same set of countries.
   const matchedZone = getZoneForCountry(countryCode, zones);
 
   const shippingTotal = matchedZone
@@ -124,9 +113,9 @@ export default function CartPage() {
     );
   }
 
-  // (Reaching this point already guarantees items.length > 0 — the early
-  // return above handles the empty-cart case, so there's no need for a
-  // second "is it empty" branch below anymore.)
+
+
+  
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-4xl text-center font-display mb-10">Shopping Cart</h1>

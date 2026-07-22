@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -133,8 +134,7 @@ useEffect(() => {
 
       <label className="block text-sm mb-1">Cover image</label>
       {coverImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverImage} alt="" className="w-full h-40 object-cover rounded mb-2" />
+        <Image src={coverImage} alt="" className="w-full h-40 object-cover rounded mb-2" />
       )}
       <input
         type="file"

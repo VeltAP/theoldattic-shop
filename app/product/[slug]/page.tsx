@@ -62,7 +62,7 @@ export default async function ProductPage({
   const product = await getProduct(slug);
 
   if (!product) {
-    notFound(); // wrong slug entirely — this is a real 404
+    notFound();
   }
 
   await supabaseAdmin.rpc('increment_view_count', { target_id: product.id });
@@ -96,7 +96,6 @@ export default async function ProductPage({
     <div className="w-full max-w-6xl mx-auto px-4 py-6 md:py-12 overflow-x-hidden">
       <TrackRecentlyViewed productId={product.id} />
 
-      {/* Breadcrumb — hidden on mobile */}
       <nav className="hidden sm:block font-body text-sm text-shop-text/60 mb-6 break-words">
         <Link href="/catalog" className="hover:text-shop-accent transition-colors">
           Catalog

@@ -3,8 +3,8 @@ import { Resend } from 'resend';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const STALE_DAYS = 60; // for stale listings
-const REPORT_WINDOW_DAYS = 7; //for sold items
+const STALE_DAYS = 60;
+const REPORT_WINDOW_DAYS = 7;
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
@@ -46,12 +46,11 @@ export async function GET(request: Request) {
   const soldCount = soldProducts?.length ?? 0;
 
   if (staleCount === 0 && soldCount === 0) {
-    // Nothing to report this week — skip sending an empty email
     return NextResponse.json({ success: true, staleCount: 0, soldCount: 0 });
   }
 
   await resend.emails.send({
-    from: 'The Old Attic <onboarding@resend.dev>', // swap once domain verified
+    from: 'The Old Attic <orders@theoldattic-shop.com>',
     to: [process.env.SHOP_CONTACT_EMAIL as string],
     subject: `Weekly report — ${soldCount} sold, ${staleCount} stale listing${staleCount === 1 ? '' : 's'}`,
     html: renderDigestHtml(staleProducts ?? [], soldProducts ?? []),
@@ -154,5 +153,3 @@ function renderDigestHtml(staleProducts: StaleProduct[], soldProducts: SoldProdu
     </div>
   `;
 }
-
-// Invoke-WebRequest -Uri "http://localhost:3000/api/cron/stale-listings" -Headers @{ Authorization = "Bearer CRON_SECRET"}

@@ -13,14 +13,13 @@ export async function POST(request: Request) {
   try {
     const { name, email, message }: ContactFormBody = await request.json();
 
-    // Save a permanent copy of the message in the database
+
     await supabaseAdmin.from('contact_messages').insert({ name, email, message });
 
-    // Send the actual email to the shop's real inbox
     await resend.emails.send({
-      from: 'Vintage Shop <onboarding@resend.dev>', // swap for your own domain once verified
+      from: 'The Old Attic <orders@theoldattic-shop.com>',
       to: [process.env.SHOP_CONTACT_EMAIL as string],
-      replyTo: email, // lets the shop owner just hit "reply" to answer the customer directly
+      replyTo: email,
       subject: `New message from ${name}`,
       text: message,
     });

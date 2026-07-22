@@ -51,7 +51,6 @@ export default async function CategoryPage({
   } else if (statusKey === 'sold') {
     query = query.eq('is_active', false);
   }
-  // 'all' — no filter
 
   if (q) {
     query = query.ilike('name', `%${q}%`);

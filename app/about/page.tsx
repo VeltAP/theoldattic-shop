@@ -5,7 +5,6 @@ export default function AboutPage() {
     <div className="bg-shop-bg text-shop-text">
       <div className="max-w-5xl mx-auto px-6 py-20">
 
-        {/* Hero */}
         <div className="grid md:grid-cols-[1fr_auto] gap-12 items-center mb-24">
 
           <div>
@@ -26,7 +25,6 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {/* Signature element: a postmark-style stamp, nodding to the shop's worldwide shipping */}
           <div className="justify-self-center md:justify-self-end shrink-0">
             <div className="relative w-36 h-36 rounded-full border border-shop-accent/40 flex items-center justify-center rotate-[-6deg]">
               <div className="absolute inset-2 rounded-full border border-shop-accent/40" />
@@ -40,7 +38,6 @@ export default function AboutPage() {
 
         </div>
 
-        {/* Styles */}
         <section className="mb-24">
           <SectionLabel>Styles We Seek</SectionLabel>
 
@@ -68,7 +65,6 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {/* Source */}
         <section className="mb-24 grid md:grid-cols-2 gap-12">
           <div>
             <SectionLabel>How We Source</SectionLabel>
@@ -98,7 +94,6 @@ export default function AboutPage() {
           </ul>
         </section>
 
-        {/* Shipping + Packing */}
         <section className="mb-24 grid md:grid-cols-2 gap-12">
           <div>
             <SectionLabel>Worldwide Shipping</SectionLabel>
@@ -140,7 +135,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Marketplaces */}
         <section className="mb-24">
           <SectionLabel center>Find Us On</SectionLabel>
           <div className="flex flex-wrap justify-center gap-3">
@@ -157,7 +151,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Follow Us + Contact */}
         <section className="mb-24 border-t border-shop-text/20 pt-10 text-center">
           <p className="text-xs tracking-[0.2em] uppercase text-shop-accent font-body mb-2">
             Follow the hunt
@@ -178,7 +171,6 @@ export default function AboutPage() {
           </a>
         </section>
 
-        {/* Company */}
         <section className="border-t border-shop-text/20 pt-10 text-center text-shop-text/70 font-body text-sm">
           <p className="font-display text-base text-shop-text mb-2">SIDK d.o.o.</p>
           <p>Miklavž pri Taboru 61a</p>

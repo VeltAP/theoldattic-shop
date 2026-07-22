@@ -33,9 +33,9 @@ export default function ShippingPolicyPage() {
 
       <h2>Delivery Time</h2>
       <ul>
-        <li>Slovenia: 1–3 business days after dispatch.</li>
-        <li>EU: 3–7 business days after dispatch.</li>
-        <li>Worldwide: 7–21 business days after dispatch, depending on destination and customs.</li>
+        <li>Slovenia: 1-3 business days after dispatch.</li>
+        <li>EU: 3-7 business days after dispatch.</li>
+        <li>Worldwide: 7-21 business days after dispatch, depending on destination and customs.</li>
       </ul>
       <p>
         These are estimates, not guarantees. Larger furniture pieces (such as
